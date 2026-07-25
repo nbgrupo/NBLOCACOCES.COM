@@ -1,0 +1,171 @@
+{
+  "brand": "NB Locações",
+  "theme": "Dark / Futuristic / Minimalist",
+  "typography": {
+    "headings": {
+      "family": "Poppins",
+      "weights": ["600", "700", "900"],
+      "classes": "font-sans tracking-tighter"
+    },
+    "body": {
+      "family": "Inter",
+      "weights": ["300", "400", "500"],
+      "classes": "font-sans leading-relaxed tracking-normal"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "#121212",
+      "surface": "#1A1A1C",
+      "elevated": "#222225"
+    },
+    "primary": {
+      "electric_cyan": "#00E5FF",
+      "cyan_glow": "rgba(0, 229, 255, 0.4)",
+      "cyan_muted": "rgba(0, 229, 255, 0.1)"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "disabled": "#52525B"
+    },
+    "accent": {
+      "whatsapp": "#25D366"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-[#121212]/70 border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+    "glows": "drop-shadow-[0_0_20px_rgba(0,229,255,0.4)]",
+    "noise_texture": "Subtle SVG noise overlay on backgrounds to prevent flat black look."
+  },
+  "grids_layouts": {
+    "strategy": "Asymmetrical, generous whitespace (p-12 to p-32 for sections).",
+    "hero": "Asymmetric split or overlapping floating elements. Text intersecting image.",
+    "bento_grid": "Used for 'Diferenciais'. Mix of span-1, span-2, row-span-2 items with 1px border-white/10."
+  },
+  "motion": {
+    "hero_reveal": "Framer Motion: Masked line-by-line reveal for H1 (overflow-hidden, y: 100% -> 0).",
+    "scroll_reveal": "Staggered fade-up (y: 40, opacity: 0 -> 1) on scroll using Framer Motion whileInView.",
+    "parallax": "Subtle parallax on motorcycle images mapping scrollYProgress to y.",
+    "micro_interactions": "Buttons scale up by 1.02 on hover, glow intensity increases.",
+    "scrolling": "Lenis smooth scrolling applied at root."
+  },
+  "sections": [
+    {
+      "name": "Header & Nav",
+      "features": "Fixed top, glassmorphism backdrop-blur-xl bg-[#121212]/70, logo, 3-4 links, 'Assinar' CTA. Must be sticky."
+    },
+    {
+      "name": "Hero Section",
+      "features": "Headline: 'PLANO CONQUISTE: a locação que te transforma em dono'. Subheadline. CTAs: [Simular agora] (Cyan filled), [Ver frotas] (Outline). Visual: Premium motorcycle overlapping a dark glowing gradient background. 3D/Parallax effect on bike."
+    },
+    {
+      "name": "Como Funciona (Manifesto)",
+      "features": "3 numbered chapters (Escolha -> Aprove -> Receba). Vertical asymmetric layout or huge numbers overlapping text."
+    },
+    {
+      "name": "Diferenciais",
+      "features": "Bento Grid cards. Icons for: Sem entrada, IPVA/Seguro, Manutenção, Troca flexível, 100% Digital, Cobertura 24h. Hover effects."
+    },
+    {
+      "name": "Frota (Fleet)",
+      "features": "Filters: Street/Trail/Custom/Premium. Cards showing Honda CG Start, Fan, Bros, Yamaha Factor, Crosser with price 'a partir de'. 'Awwwards' style spotlight lighting in cards."
+    },
+    {
+      "name": "Simulador Dinâmico",
+      "features": "Interactive UI: Select bike model, drag slider for mileage. Real-time monthly price calculation. Neon cyan active states."
+    },
+    {
+      "name": "Social Proof",
+      "features": "Testimonial cards with real portraits, 5-star ratings, animated client counter (+1,000 clientes) ticking up via framer-motion."
+    },
+    {
+      "name": "Marquee",
+      "features": "Editorial slow-moving marquee (react-fast-marquee) with huge outline text or brand keywords."
+    },
+    {
+      "name": "FAQ",
+      "features": "Modern accordion (Shadcn UI based but customized). 1px border-b, cyan icon rotation on open."
+    },
+    {
+      "name": "Localização",
+      "features": "Google Maps embed with a dark mode overlay. Floating glass card over map with address, hours, WhatsApp, 'Como chegar'."
+    },
+    {
+      "name": "Final CTA",
+      "features": "Massive text 'Pronto para pilotar sem preocupações?'. Huge cyan button [Começar agora] with pulse effect."
+    },
+    {
+      "name": "Admin Panel",
+      "features": "Floating gear icon (bottom right). Opens a Shadcn UI Dialog/Sheet. Tabs: Conteúdo, Cores, Imagens, Contato. Fields update Context/localStorage. 'Export JSON' button."
+    },
+    {
+      "name": "Floating Elements",
+      "features": "WhatsApp green pulse button #25D366 (bottom right above admin), Back-to-top button."
+    }
+  ],
+  "image_urls": [
+    {
+      "category": "Hero / Premium Moto",
+      "url": "https://images.unsplash.com/photo-1656420731892-a4ece094df5a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHw0fHxtb3RvcmN5Y2xlJTIwZGFyayUyMGJhY2tncm91bmQlMjBzdHVkaW98ZW58MHx8fHwxNzg1MDA4NjU5fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Premium black motorcycle on black studio background (Hero spotlight)"
+    },
+    {
+      "category": "Fleet / Premium",
+      "url": "https://images.pexels.com/photos/18757688/pexels-photo-18757688.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Moto Guzzi elegant low light"
+    },
+    {
+      "category": "Fleet / Street",
+      "url": "https://images.unsplash.com/photo-1661215477041-ec4501e00042?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwzfHxtb3RvcmN5Y2xlJTIwZGFyayUyMGJhY2tncm91bmQlMjBzdHVkaW98ZW58MHx8fHwxNzg1MDA4NjU5fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Street motorcycle in garage"
+    },
+    {
+      "category": "Context / Urban Night",
+      "url": "https://images.pexels.com/photos/13074627/pexels-photo-13074627.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Motorcyclist at night (use for manifesto/how it works)"
+    },
+    {
+      "category": "Testimonial Portrait 1",
+      "url": "https://images.pexels.com/photos/7562179/pexels-photo-7562179.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Happy portrait 1"
+    },
+    {
+      "category": "Testimonial Portrait 2",
+      "url": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwyfHxoYXBweSUyMHBlcnNvbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc4NTAwODY1OXww&ixlib=rb-4.1.0&q=85",
+      "description": "Happy portrait 2"
+    }
+  ],
+  "component_path": {
+    "button": "src/components/ui/button.js",
+    "card": "src/components/ui/card.js",
+    "dialog": "src/components/ui/dialog.js",
+    "tabs": "src/components/ui/tabs.js",
+    "slider": "src/components/ui/slider.js",
+    "accordion": "src/components/ui/accordion.js",
+    "input": "src/components/ui/input.js"
+  },
+  "instructions_to_main_agent": [
+    "Install and configure 'framer-motion' for scroll reveal animations.",
+    "Install and configure '@studio-freight/lenis' (or just 'lenis') for smooth momentum scrolling.",
+    "Install 'lucide-react' for all icons.",
+    "Install 'react-fast-marquee' for the editorial scrolling text.",
+    "Create the app exclusively using JavaScript (.js/.jsx), NOT TypeScript (.tsx). Initialize shadcn with js setup.",
+    "Implement the dark theme globally in Tailwind config (#121212 background, #00E5FF primary).",
+    "Ensure the sticky header has z-50 and uses backdrop-blur-xl bg-[#121212]/70 without a completely transparent background.",
+    "Use generous padding (py-24 or py-32) to enforce the Awwwards-level whitespace standard.",
+    "Admin panel must read and write to localStorage (e.g., config for content, colors, etc) so the UI reacts to it dynamically. Add a JSON export function.",
+    "Apply data-testid to all interactive elements to support UI testing."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Do not use generic centered layouts. Use asymmetrical 'bento' grids or offset flexbox patterns.",
+    "Do not use 'transition: all'. Apply transitions selectively (e.g., 'transition-colors transition-transform duration-300 ease-out').",
+    "Never center align the root .App container text.",
+    "No emojis as icons. Use Lucide icons.",
+    "Always use data-testid on buttons, inputs, links, and forms.",
+    "Add aria-hidden to purely decorative animations or background text.",
+    "If using SVGs, ensure they have proper viewBox and fill='currentColor' or defined strokes.",
+    "Ensure minimum WCAG AA contrast ratio. Even with dark mode, #A1A1AA text on #121212 is legible, but pure black backgrounds need off-white text.",
+    "All missing images MUST be substituted with provided image_urls, NEVER use placehold.it or dummy text."
+  ]
+}
