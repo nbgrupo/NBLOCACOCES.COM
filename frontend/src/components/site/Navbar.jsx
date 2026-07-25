@@ -13,7 +13,6 @@ const LINKS = [
   { label: "Início", id: "hero" },
   { label: "Como Funciona", id: "como-funciona" },
   { label: "Frota", id: "frota" },
-  { label: "Simulador", id: "simulador" },
   { label: "FAQ", id: "faq" },
 ];
 
@@ -64,7 +63,7 @@ export default function Navbar() {
 
         <button
           data-testid="nav-cta"
-          onClick={() => scrollToId("simulador")}
+          onClick={() => scrollToId("frota")}
           className="hidden md:inline-flex items-center rounded-full bg-accent-nb px-5 py-2 text-sm font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.04] glow-accent"
         >
           Assinar
@@ -104,7 +103,7 @@ export default function Navbar() {
                 <SheetClose asChild>
                   <button
                     data-testid="mobile-nav-cta"
-                    onClick={() => scrollToId("simulador")}
+                    onClick={() => scrollToId("frota")}
                     className="mt-4 rounded-full bg-accent-nb px-5 py-3 font-semibold text-[#0a0a0a]"
                   >
                     Assinar agora

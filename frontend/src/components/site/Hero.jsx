@@ -63,7 +63,7 @@ export default function Hero() {
             >
               <button
                 data-testid="hero-cta-primary"
-                onClick={() => scrollToId("simulador")}
+                onClick={() => scrollToId("frota")}
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-accent-nb px-7 py-3.5 text-sm font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.04] glow-accent"
               >
                 {hero.ctaPrimary}

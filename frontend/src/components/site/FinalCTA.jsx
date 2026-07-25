@@ -39,7 +39,7 @@ export default function FinalCTA() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.35 }}
           data-testid="cta-final-btn"
-          onClick={() => scrollToId("simulador")}
+          onClick={() => scrollToId("frota")}
           className="group mt-10 inline-flex items-center justify-center gap-3 rounded-full bg-accent-nb px-9 py-4 text-base font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.05] glow-accent"
         >
           {data.button}

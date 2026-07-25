@@ -8,7 +8,6 @@ import Hero from "@/components/site/Hero";
 import ComoFunciona from "@/components/site/ComoFunciona";
 import Diferenciais from "@/components/site/Diferenciais";
 import Frota from "@/components/site/Frota";
-import Simulador from "@/components/site/Simulador";
 import SocialProof from "@/components/site/SocialProof";
 import EditorialMarquee from "@/components/site/EditorialMarquee";
 import FAQ from "@/components/site/FAQ";
@@ -52,7 +51,6 @@ function App() {
           <ComoFunciona />
           <Diferenciais />
           <Frota />
-          <Simulador />
           <EditorialMarquee />
           <SocialProof />
           <FAQ />

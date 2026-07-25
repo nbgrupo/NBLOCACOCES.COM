@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { SectionHeading } from "@/components/site/shared";
 
@@ -14,13 +14,27 @@ export default function Frota() {
       ? data.bikes
       : data.bikes.filter((b) => b.category === active);
 
-  const selectBike = (bike) => {
-    window.dispatchEvent(new CustomEvent("nb:select-bike", { detail: bike.id }));
-    const el = document.getElementById("simulador");
-    if (el) {
-      if (window.__lenis) window.__lenis.scrollTo(el, { offset: -80 });
-      else el.scrollIntoView({ behavior: "smooth" });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    loop: false,
+    dragFree: true,
+    containScroll: "trimSnaps",
+  });
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.reInit();
+      emblaApi.scrollTo(0);
     }
+  }, [active, emblaApi, bikes.length]);
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+  const openBike = (bike) => {
+    const num = (config.whatsapp?.number || "").replace(/\D/g, "");
+    const msg = `Olá! Vim pelo site da NB Locações e quero assinar a ${bike.name} (a partir de R$ ${bike.price}/mês). Pode me ajudar?`;
+    window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (
@@ -47,59 +61,78 @@ export default function Frota() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <AnimatePresence mode="popLayout">
-            {bikes.map((bike, i) => (
-              <motion.article
-                layout
-                key={bike.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.5, delay: (i % 3) * 0.06 }}
-                data-testid={`bike-card-${bike.id}`}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#1a1a1c]"
-              >
-                <div className="relative overflow-hidden aspect-[4/3]">
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: "radial-gradient(60% 60% at 50% 40%, rgba(var(--nb-accent-rgb),0.22), transparent 70%)" }}
-                  />
-                  <img
-                    src={bike.image}
-                    alt={bike.name}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <span className="absolute top-4 left-4 z-20 rounded-full glass px-3 py-1 text-xs text-white/80">
-                    {bike.category}
-                  </span>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-display font-semibold text-xl text-white">{bike.name}</h3>
-                  <p className="text-sm text-white/45 mt-1">{bike.specs}</p>
-                  <div className="mt-5 flex items-end justify-between">
-                    <div>
-                      <p className="text-xs text-white/40 uppercase tracking-widest">a partir de</p>
-                      <p className="font-display font-bold text-2xl text-white">
-                        R$ {bike.price}
-                        <span className="text-sm font-normal text-white/50">/mês</span>
-                      </p>
-                    </div>
-                    <button
-                      data-testid={`bike-simular-${bike.id}`}
-                      onClick={() => selectBike(bike)}
-                      aria-label={`Simular ${bike.name}`}
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent-nb/10 text-accent-nb transition-colors duration-300 hover:bg-accent-nb hover:text-[#0a0a0a]"
-                    >
-                      <ArrowUpRight className="h-5 w-5" />
-                    </button>
+        <div className="mt-12">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-5 touch-pan-y">
+              {bikes.map((bike) => (
+                <article
+                  key={bike.id}
+                  data-testid={`bike-card-${bike.id}`}
+                  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#1a1a1c] flex-[0_0_85%] sm:flex-[0_0_46%] lg:flex-[0_0_31%]"
+                >
+                  <div className="relative overflow-hidden aspect-[4/3]">
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{ background: "radial-gradient(60% 60% at 50% 40%, rgba(var(--nb-accent-rgb),0.22), transparent 70%)" }}
+                    />
+                    <img
+                      src={bike.image}
+                      alt={bike.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <span className="absolute top-4 left-4 z-20 rounded-full glass px-3 py-1 text-xs text-white/80">
+                      {bike.category}
+                    </span>
                   </div>
-                </div>
-              </motion.article>
-            ))}
-          </AnimatePresence>
+                  <div className="p-6">
+                    <h3 className="font-display font-semibold text-xl text-white">{bike.name}</h3>
+                    <p className="text-sm text-white/45 mt-1">{bike.specs}</p>
+                    <div className="mt-5 flex items-end justify-between">
+                      <div>
+                        <p className="text-xs text-white/40 uppercase tracking-widest">a partir de</p>
+                        <p className="font-display font-bold text-2xl text-white">
+                          R$ {bike.price}
+                          <span className="text-sm font-normal text-white/50">/mês</span>
+                        </p>
+                      </div>
+                      <button
+                        data-testid={`bike-cta-${bike.id}`}
+                        onClick={() => openBike(bike)}
+                        aria-label={`Assinar ${bike.name}`}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent-nb/10 text-accent-nb transition-colors duration-300 hover:bg-accent-nb hover:text-[#0a0a0a]"
+                      >
+                        <ArrowUpRight className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-center justify-between">
+            <p className="text-sm text-white/40">Arraste para explorar a frota</p>
+            <div className="flex gap-2">
+              <button
+                data-testid="frota-prev"
+                onClick={scrollPrev}
+                aria-label="Moto anterior"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-accent-nb hover:text-accent-nb"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                data-testid="frota-next"
+                onClick={scrollNext}
+                aria-label="Próxima moto"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-accent-nb hover:text-accent-nb"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

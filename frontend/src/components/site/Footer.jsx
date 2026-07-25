@@ -7,7 +7,6 @@ const QUICK_LINKS = [
   { label: "Início", id: "hero" },
   { label: "Como Funciona", id: "como-funciona" },
   { label: "Frota", id: "frota" },
-  { label: "Simulador", id: "simulador" },
   { label: "FAQ", id: "faq" },
 ];
 
