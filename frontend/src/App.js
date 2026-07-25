@@ -1,55 +1,70 @@
 import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import Lenis from "lenis";
+import { Toaster } from "@/components/ui/sonner";
+import { ConfigProvider } from "@/context/ConfigContext";
+import Navbar from "@/components/site/Navbar";
+import Hero from "@/components/site/Hero";
+import ComoFunciona from "@/components/site/ComoFunciona";
+import Diferenciais from "@/components/site/Diferenciais";
+import Frota from "@/components/site/Frota";
+import Simulador from "@/components/site/Simulador";
+import SocialProof from "@/components/site/SocialProof";
+import EditorialMarquee from "@/components/site/EditorialMarquee";
+import FAQ from "@/components/site/FAQ";
+import Localizacao from "@/components/site/Localizacao";
+import FinalCTA from "@/components/site/FinalCTA";
+import Footer from "@/components/site/Footer";
+import FloatingButtons from "@/components/site/FloatingButtons";
+import AdminPanel from "@/components/site/AdminPanel";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
+function App() {
   useEffect(() => {
-    helloWorldApi();
+    document.documentElement.classList.add("dark");
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    window.__lenis = lenis;
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      window.__lenis = null;
+    };
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ConfigProvider>
+      <div className="App bg-[#121212] text-white antialiased min-h-screen">
+        <Navbar />
+        <main>
+          <Hero />
+          <ComoFunciona />
+          <Diferenciais />
+          <Frota />
+          <Simulador />
+          <EditorialMarquee />
+          <SocialProof />
+          <FAQ />
+          <Localizacao />
+          <FinalCTA />
+        </main>
+        <Footer />
+        <FloatingButtons />
+        <AdminPanel />
+        <Toaster position="bottom-center" theme="dark" richColors />
+      </div>
+    </ConfigProvider>
   );
 }
 
