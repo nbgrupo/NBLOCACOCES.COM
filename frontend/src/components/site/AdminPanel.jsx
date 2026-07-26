@@ -273,6 +273,24 @@ export default function AdminPanel() {
           {/* ---------- IMAGENS ---------- */}
           <TabsContent value="imagens" className="space-y-6 mt-5">
             <ImageField label="Imagem do Hero" testid="edit-hero-image" value={draft.hero.image} onChange={(v) => edit((d) => (d.hero.image = v))} />
+            <div className="space-y-3 rounded-lg border border-accent-nb/30 p-3">
+              <p className="text-xs uppercase tracking-widest text-accent-nb">Vídeo de fundo do Hero</p>
+              <Field
+                label="URL do vídeo (MP4/WebM)"
+                testid="edit-hero-video"
+                value={draft.hero.videoUrl}
+                onChange={(v) => edit((d) => (d.hero.videoUrl = v))}
+              />
+              <ImageField
+                label="Imagem de capa (poster)"
+                testid="edit-hero-video-poster"
+                value={draft.hero.videoPoster}
+                onChange={(v) => edit((d) => (d.hero.videoPoster = v))}
+              />
+              <p className="text-[11px] text-white/40">
+                Cole o link direto de um arquivo de vídeo (.mp4/.webm). Deixe em branco para usar o fundo padrão.
+              </p>
+            </div>
             <div className="space-y-3">
               <p className="text-xs uppercase tracking-widest text-accent-nb">Frota</p>
               {draft.frota.bikes.map((b, i) => (

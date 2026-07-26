@@ -25,6 +25,25 @@ export default function Hero() {
       data-testid="hero-section"
       className="relative min-h-screen animated-gradient grid-pattern noise overflow-hidden"
     >
+      {hero.videoUrl ? (
+        <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+          <video
+            key={hero.videoUrl}
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={hero.videoPoster || hero.image}
+          >
+            <source src={hero.videoUrl} />
+          </video>
+          <div className="absolute inset-0 bg-[#121212]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#121212] via-[#121212]/70 to-[#121212]/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
+        </div>
+      ) : null}
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 pt-28 sm:pt-36 pb-20">
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           {/* Left column */}

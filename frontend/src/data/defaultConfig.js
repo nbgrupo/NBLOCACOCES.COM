@@ -20,6 +20,8 @@ const defaultConfig = {
     ctaSecondary: "Ver frotas",
     image:
       "https://images.unsplash.com/photo-1656420731892-a4ece094df5a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHw0fHxtb3RvcmN5Y2xlJTIwZGFyayUyMGJhY2tncm91bmQlMjBzdHVkaW98ZW58MHx8fHwxNzg1MDA4NjU5fDA&ixlib=rb-4.1.0&q=85",
+    videoUrl: "",
+    videoPoster: "",
   },
   counter: {
     value: 1200,
