@@ -1,8 +1,10 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import shutil
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
@@ -13,6 +15,11 @@ from datetime import datetime, timezone
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Uploads directory (served statically)
+UPLOAD_DIR = ROOT_DIR / "uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
+ALLOWED_EXT = {".mp4", ".webm", ".mov", ".ogg", ".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -111,8 +118,26 @@ async def list_leads():
     return leads
 
 
+@api_router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    ext = os.path.splitext(file.filename or "")[1].lower()
+    if ext not in ALLOWED_EXT:
+        raise HTTPException(status_code=400, detail=f"Tipo de arquivo não suportado: {ext}")
+    name = f"{uuid.uuid4().hex}{ext}"
+    dest = UPLOAD_DIR / name
+    try:
+        with dest.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    finally:
+        file.file.close()
+    return {"url": f"/api/uploads/{name}", "filename": name}
+
+
 # Include the router in the main app
 app.include_router(api_router)
+
+# Serve uploaded files (ingress routes /api/* to this backend)
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

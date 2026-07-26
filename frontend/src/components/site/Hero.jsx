@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Zap, Volume2, VolumeX } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { MaskedLine, AnimatedCounter, scrollToId } from "@/components/site/shared";
 
@@ -9,6 +9,16 @@ export default function Hero() {
   const hero = config.hero;
   const counter = config.counter;
   const ref = useRef(null);
+  const videoRef = useRef(null);
+  const [muted, setMuted] = useState(true);
+
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+    if (!v.muted) v.play().catch(() => {});
+  };
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -29,6 +39,7 @@ export default function Hero() {
         <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
           <video
             key={hero.videoUrl}
+            ref={videoRef}
             className="h-full w-full object-cover"
             autoPlay
             muted
@@ -159,6 +170,17 @@ export default function Hero() {
         <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">Role</span>
         <div className="h-10 w-px bg-gradient-to-b from-accent-nb to-transparent" />
       </div>
+
+      {hero.videoUrl ? (
+        <button
+          data-testid="hero-mute-btn"
+          onClick={toggleMute}
+          aria-label={muted ? "Ativar som" : "Desativar som"}
+          className="absolute bottom-8 left-5 sm:left-8 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full glass-strong border border-white/10 text-white/80 transition-colors duration-300 hover:text-accent-nb"
+        >
+          {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+        </button>
+      ) : null}
     </section>
   );
 }

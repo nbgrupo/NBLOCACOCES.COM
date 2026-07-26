@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Settings, Download, RotateCcw, Save, Plus, Trash2 } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { Settings, Download, RotateCcw, Save, Plus, Trash2, Upload, Loader2, Video } from "lucide-react";
 import { toast } from "sonner";
 import { useConfig } from "@/context/ConfigContext";
 import {
@@ -69,6 +70,11 @@ export default function AdminPanel() {
   const [draft, setDraft] = useState(config);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const videoInputRef = useRef(null);
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
 
   useEffect(() => {
     if (open) setDraft(structuredClone(config));
@@ -80,6 +86,32 @@ export default function AdminPanel() {
       mutator(d);
       return d;
     });
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const maxMB = 60;
+    if (file.size > maxMB * 1024 * 1024) {
+      toast.error(`Vídeo muito grande (máx. ${maxMB}MB).`);
+      return;
+    }
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await axios.post(`${API}/upload`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const fullUrl = `${BACKEND_URL}${res.data.url}`;
+      edit((d) => (d.hero.videoUrl = fullUrl));
+      toast.success("Vídeo enviado! Clique em Salvar para publicar.");
+    } catch (err) {
+      toast.error("Falha ao enviar o vídeo.");
+    } finally {
+      setUploading(false);
+      if (videoInputRef.current) videoInputRef.current.value = "";
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -275,8 +307,52 @@ export default function AdminPanel() {
             <ImageField label="Imagem do Hero" testid="edit-hero-image" value={draft.hero.image} onChange={(v) => edit((d) => (d.hero.image = v))} />
             <div className="space-y-3 rounded-lg border border-accent-nb/30 p-3">
               <p className="text-xs uppercase tracking-widest text-accent-nb">Vídeo de fundo do Hero</p>
+
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                onChange={handleVideoUpload}
+                className="hidden"
+                data-testid="hero-video-file-input"
+              />
+              <button
+                data-testid="hero-video-upload-btn"
+                onClick={() => videoInputRef.current && videoInputRef.current.click()}
+                disabled={uploading}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-white/25 bg-[#0e0e0f] px-4 py-4 text-sm text-white/70 transition-colors hover:border-accent-nb hover:text-accent-nb disabled:opacity-60"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Enviando vídeo...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4" /> Enviar vídeo do dispositivo
+                  </>
+                )}
+              </button>
+
+              {draft.hero.videoUrl ? (
+                <div className="relative overflow-hidden rounded-lg border border-white/10">
+                  <video src={draft.hero.videoUrl} className="w-full h-28 object-cover" muted loop autoPlay playsInline />
+                  <button
+                    data-testid="hero-video-remove"
+                    onClick={() => edit((d) => (d.hero.videoUrl = ""))}
+                    className="absolute top-1.5 right-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/80 hover:text-red-400"
+                    aria-label="Remover vídeo"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-xs text-white/40">
+                  <Video className="h-4 w-4" /> Nenhum vídeo. Usando fundo padrão.
+                </div>
+              )}
+
               <Field
-                label="URL do vídeo (MP4/WebM)"
+                label="Ou cole uma URL de vídeo (MP4/WebM)"
                 testid="edit-hero-video"
                 value={draft.hero.videoUrl}
                 onChange={(v) => edit((d) => (d.hero.videoUrl = v))}
@@ -288,7 +364,7 @@ export default function AdminPanel() {
                 onChange={(v) => edit((d) => (d.hero.videoPoster = v))}
               />
               <p className="text-[11px] text-white/40">
-                Cole o link direto de um arquivo de vídeo (.mp4/.webm). Deixe em branco para usar o fundo padrão.
+                Envie um arquivo (máx. 60MB) ou cole um link. Deixe em branco para usar o fundo padrão.
               </p>
             </div>
             <div className="space-y-3">
