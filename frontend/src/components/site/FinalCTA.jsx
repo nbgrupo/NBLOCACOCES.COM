@@ -12,7 +12,7 @@ export default function FinalCTA() {
     <section
       id="cta-final"
       data-testid="cta-final-section"
-      className="relative bg-[#0e0e0f] animated-gradient noise py-28 sm:py-40 overflow-hidden"
+      className="relative bg-white animated-gradient noise py-28 sm:py-40 overflow-hidden"
     >
       <div className="relative z-10 mx-auto max-w-4xl px-5 sm:px-8 text-center">
         <motion.h2
@@ -20,7 +20,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display font-black tracking-tighter text-4xl sm:text-6xl lg:text-7xl text-white leading-[0.95]"
+          className="font-display font-black tracking-tighter text-4xl sm:text-6xl lg:text-7xl text-slate-900 leading-[0.95]"
         >
           {data.title}
         </motion.h2>
@@ -29,7 +29,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mt-6 text-lg text-white/60"
+          className="mt-6 text-lg text-slate-500"
         >
           {data.subtitle}
         </motion.p>

@@ -50,9 +50,9 @@ export default function Hero() {
           >
             <source src={hero.videoUrl} />
           </video>
-          <div className="absolute inset-0 bg-[#121212]/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#121212] via-[#121212]/70 to-[#121212]/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-white/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 to-white/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
         </div>
       ) : null}
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 pt-28 sm:pt-36 pb-20">
@@ -63,15 +63,15 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-accent-nb mb-8"
+              className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-accent-ink mb-8"
             >
               <Zap className="h-3.5 w-3.5" />
               {hero.badge}
             </motion.div>
 
-            <h1 className="font-display font-black tracking-tighter leading-[0.95] text-4xl sm:text-6xl lg:text-7xl text-white">
+            <h1 className="font-display font-black tracking-tighter leading-[0.95] text-4xl sm:text-6xl lg:text-7xl text-slate-900">
               <MaskedLine delay={0.15}>{hero.titleLine1}</MaskedLine>
-              <MaskedLine delay={0.32} className="text-accent-nb text-glow">
+              <MaskedLine delay={0.32} className="text-accent-ink text-glow">
                 {hero.titleLine2}
               </MaskedLine>
             </h1>
@@ -80,7 +80,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.55 }}
-              className="mt-6 max-w-md text-base sm:text-lg text-white/60 leading-relaxed"
+              className="mt-6 max-w-md text-base sm:text-lg text-slate-500 leading-relaxed"
             >
               {hero.subtitle}
             </motion.p>
@@ -102,7 +102,7 @@ export default function Hero() {
               <button
                 data-testid="hero-cta-secondary"
                 onClick={() => scrollToId("frota")}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold text-white transition-colors duration-300 hover:border-accent-nb hover:text-accent-nb"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:border-accent-nb hover:text-accent-ink"
               >
                 {hero.ctaSecondary}
               </button>
@@ -117,9 +117,9 @@ export default function Hero() {
               <AnimatedCounter
                 value={counter.value}
                 suffix={counter.suffix}
-                className="font-display font-bold text-3xl sm:text-4xl text-white"
+                className="font-display font-bold text-3xl sm:text-4xl text-slate-900"
               />
-              <span className="text-sm text-white/50 max-w-[180px] leading-snug">
+              <span className="text-sm text-slate-500 max-w-[180px] leading-snug">
                 {counter.label}
               </span>
             </motion.div>
@@ -144,19 +144,19 @@ export default function Hero() {
               style={{ y: imgY, scale: imgScale }}
               className="relative"
             >
-              <div className="relative overflow-hidden rounded-[2rem] border border-white/10">
+              <div className="relative overflow-hidden rounded-[2rem] border border-black/10">
                 <img
                   src={hero.image}
                   alt="Moto premium NB Locações"
                   loading="eager"
                   className="w-full h-[380px] sm:h-[520px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                 <div className="absolute bottom-5 left-5 glass rounded-2xl px-5 py-3">
-                  <p className="text-xs text-white/50 uppercase tracking-widest">a partir de</p>
-                  <p className="font-display font-bold text-2xl text-white">
+                  <p className="text-xs text-slate-500 uppercase tracking-widest">a partir de</p>
+                  <p className="font-display font-bold text-2xl text-slate-900">
                     R$ {config.frota?.bikes?.[0]?.price}
-                    <span className="text-sm font-normal text-white/50">/mês</span>
+                    <span className="text-sm font-normal text-slate-500">/mês</span>
                   </p>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default function Hero() {
 
       {/* scroll hint */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">Role</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400">Role</span>
         <div className="h-10 w-px bg-gradient-to-b from-accent-nb to-transparent" />
       </div>
 
@@ -176,7 +176,7 @@ export default function Hero() {
           data-testid="hero-mute-btn"
           onClick={toggleMute}
           aria-label={muted ? "Ativar som" : "Desativar som"}
-          className="absolute bottom-8 left-5 sm:left-8 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full glass-strong border border-white/10 text-white/80 transition-colors duration-300 hover:text-accent-nb"
+          className="absolute bottom-8 left-5 sm:left-8 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full glass-strong border border-black/10 text-slate-700 transition-colors duration-300 hover:text-accent-ink"
         >
           {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
         </button>

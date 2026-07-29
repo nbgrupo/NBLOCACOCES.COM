@@ -13,6 +13,8 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
+        'accent-nb': 'rgb(var(--nb-accent-rgb) / <alpha-value>)',
+        'accent-ink': 'var(--nb-accent-ink)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

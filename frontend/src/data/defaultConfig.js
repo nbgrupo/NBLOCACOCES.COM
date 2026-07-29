@@ -4,7 +4,7 @@
 const defaultConfig = {
   colors: {
     accent: "#00E5FF",
-    background: "#121212",
+    background: "#F4F5F7",
   },
   brand: {
     name: "NB Locações",

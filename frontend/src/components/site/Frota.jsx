@@ -38,7 +38,7 @@ export default function Frota() {
   };
 
   return (
-    <section id="frota" data-testid="frota-section" className="relative bg-[#0e0e0f] py-24 sm:py-32">
+    <section id="frota" data-testid="frota-section" className="relative bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <SectionHeading eyebrow="Frota" title={data.title} subtitle={data.subtitle} />
@@ -52,7 +52,7 @@ export default function Frota() {
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 border ${
                   active === cat
                     ? "bg-accent-nb text-[#0a0a0a] border-transparent"
-                    : "border-white/15 text-white/70 hover:text-white hover:border-white/40"
+                    : "border-black/10 text-slate-600 hover:text-slate-900 hover:border-black/25"
                 }`}
               >
                 {cat}
@@ -68,7 +68,7 @@ export default function Frota() {
                 <article
                   key={bike.id}
                   data-testid={`bike-card-${bike.id}`}
-                  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#1a1a1c] flex-[0_0_85%] sm:flex-[0_0_46%] lg:flex-[0_0_31%]"
+                  className="group relative overflow-hidden rounded-3xl border border-black/10 bg-white flex-[0_0_85%] sm:flex-[0_0_46%] lg:flex-[0_0_31%]"
                 >
                   <div className="relative overflow-hidden aspect-[4/3]">
                     <div
@@ -82,26 +82,26 @@ export default function Frota() {
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <span className="absolute top-4 left-4 z-20 rounded-full glass px-3 py-1 text-xs text-white/80">
+                    <span className="absolute top-4 left-4 z-20 rounded-full glass px-3 py-1 text-xs text-slate-700">
                       {bike.category}
                     </span>
                   </div>
                   <div className="p-6">
-                    <h3 className="font-display font-semibold text-xl text-white">{bike.name}</h3>
-                    <p className="text-sm text-white/45 mt-1">{bike.specs}</p>
+                    <h3 className="font-display font-semibold text-xl text-slate-900">{bike.name}</h3>
+                    <p className="text-sm text-slate-400 mt-1">{bike.specs}</p>
                     <div className="mt-5 flex items-end justify-between">
                       <div>
-                        <p className="text-xs text-white/40 uppercase tracking-widest">a partir de</p>
-                        <p className="font-display font-bold text-2xl text-white">
+                        <p className="text-xs text-slate-400 uppercase tracking-widest">a partir de</p>
+                        <p className="font-display font-bold text-2xl text-slate-900">
                           R$ {bike.price}
-                          <span className="text-sm font-normal text-white/50">/mês</span>
+                          <span className="text-sm font-normal text-slate-500">/mês</span>
                         </p>
                       </div>
                       <button
                         data-testid={`bike-cta-${bike.id}`}
                         onClick={() => openBike(bike)}
                         aria-label={`Assinar ${bike.name}`}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent-nb/10 text-accent-nb transition-colors duration-300 hover:bg-accent-nb hover:text-[#0a0a0a]"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent-nb/10 text-accent-ink transition-colors duration-300 hover:bg-accent-nb hover:text-[#0a0a0a]"
                       >
                         <ArrowUpRight className="h-5 w-5" />
                       </button>
@@ -113,13 +113,13 @@ export default function Frota() {
           </div>
 
           <div className="mt-8 flex items-center justify-between">
-            <p className="text-sm text-white/40">Arraste para explorar a frota</p>
+            <p className="text-sm text-slate-400">Arraste para explorar a frota</p>
             <div className="flex gap-2">
               <button
                 data-testid="frota-prev"
                 onClick={scrollPrev}
                 aria-label="Moto anterior"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-accent-nb hover:text-accent-nb"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-slate-600 transition-colors duration-300 hover:border-accent-nb hover:text-accent-ink"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -127,7 +127,7 @@ export default function Frota() {
                 data-testid="frota-next"
                 onClick={scrollNext}
                 aria-label="Próxima moto"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-accent-nb hover:text-accent-nb"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-slate-600 transition-colors duration-300 hover:border-accent-nb hover:text-accent-ink"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>

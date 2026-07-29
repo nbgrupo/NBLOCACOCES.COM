@@ -43,7 +43,7 @@ export default function FloatingButtons() {
         data-testid="back-to-top-btn"
         onClick={scrollTop}
         aria-label="Voltar ao topo"
-        className={`fixed bottom-24 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full glass-strong text-white border border-white/10 transition-all duration-300 hover:text-accent-nb ${
+        className={`fixed bottom-24 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full glass-strong text-slate-700 border border-black/10 transition-all duration-300 hover:text-accent-ink ${
           showTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
         }`}
       >

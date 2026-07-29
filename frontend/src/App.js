@@ -44,7 +44,7 @@ function App() {
 
   return (
     <ConfigProvider>
-      <div className="App bg-[#121212] text-white antialiased min-h-screen">
+      <div className="App bg-[#F4F5F7] text-slate-900 antialiased min-h-screen">
         <Navbar />
         <main>
           <Hero />
@@ -60,7 +60,7 @@ function App() {
         <Footer />
         <FloatingButtons />
         <AdminPanel />
-        <Toaster position="bottom-center" theme="dark" richColors />
+        <Toaster position="bottom-center" theme="light" richColors />
       </div>
     </ConfigProvider>
   );

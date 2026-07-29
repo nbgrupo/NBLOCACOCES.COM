@@ -64,20 +64,20 @@ export function SectionHeading({ eyebrow, title, subtitle, align = "left" }) {
     <div className={align === "center" ? "text-center max-w-2xl mx-auto" : "max-w-2xl"}>
       {eyebrow && (
         <Reveal>
-          <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-accent-nb font-medium">
+          <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-accent-ink font-medium">
             <span className="h-px w-8 bg-accent-nb" />
             {eyebrow}
           </span>
         </Reveal>
       )}
       <Reveal delay={0.1}>
-        <h2 className="font-display font-bold tracking-tighter text-3xl sm:text-4xl lg:text-5xl mt-4 text-white">
+        <h2 className="font-display font-bold tracking-tighter text-3xl sm:text-4xl lg:text-5xl mt-4 text-slate-900">
           {title}
         </h2>
       </Reveal>
       {subtitle && (
         <Reveal delay={0.2}>
-          <p className="mt-4 text-base text-white/60 leading-relaxed">{subtitle}</p>
+          <p className="mt-4 text-base text-slate-500 leading-relaxed">{subtitle}</p>
         </Reveal>
       )}
     </div>

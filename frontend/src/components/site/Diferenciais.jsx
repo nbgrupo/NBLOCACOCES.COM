@@ -39,7 +39,7 @@ export default function Diferenciais() {
     <section
       id="diferenciais"
       data-testid="diferenciais-section"
-      className="relative bg-[#121212] py-24 sm:py-32"
+      className="relative bg-[#F4F5F7] py-24 sm:py-32"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading eyebrow="Diferenciais" title={data.title} subtitle={data.subtitle} />
@@ -55,19 +55,19 @@ export default function Diferenciais() {
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.6, delay: (i % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 data-testid={`diferencial-${i}`}
-                className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-[#1a1a1c] p-7 flex flex-col justify-between transition-colors duration-500 hover:border-accent-nb/40 ${SPANS[i] || ""}`}
+                className={`group relative overflow-hidden rounded-3xl border border-black/10 bg-white p-7 flex flex-col justify-between transition-colors duration-500 hover:border-accent-nb/40 ${SPANS[i] || ""}`}
               >
                 <div
                   aria-hidden="true"
                   className="absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-3xl"
                   style={{ background: "radial-gradient(circle, rgba(var(--nb-accent-rgb),0.25), transparent 70%)" }}
                 />
-                <div className="relative z-10 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-nb/10 text-accent-nb">
+                <div className="relative z-10 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-nb/10 text-accent-ink">
                   <Icon className="h-6 w-6" />
                 </div>
                 <div className="relative z-10">
-                  <h3 className="font-display font-semibold text-xl text-white">{item.title}</h3>
-                  <p className="mt-2 text-sm text-white/55 leading-relaxed">{item.desc}</p>
+                  <h3 className="font-display font-semibold text-xl text-slate-900">{item.title}</h3>
+                  <p className="mt-2 text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                 </div>
               </motion.div>
             );

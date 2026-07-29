@@ -34,6 +34,17 @@ function hexToRgb(hex) {
   return `${r}, ${g}, ${b}`;
 }
 
+// Darken a hex color toward black by a factor (0..1). Used for legible accent text on light bg.
+function darkenHex(hex, factor = 0.45) {
+  const clean = (hex || "").replace("#", "");
+  if (clean.length !== 6) return "#006773";
+  const r = Math.round(parseInt(clean.slice(0, 2), 16) * factor);
+  const g = Math.round(parseInt(clean.slice(2, 4), 16) * factor);
+  const b = Math.round(parseInt(clean.slice(4, 6), 16) * factor);
+  const toHex = (n) => Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
 function hexToHslString(hex) {
   const clean = (hex || "").replace("#", "");
   if (clean.length !== 6) return null;
@@ -66,9 +77,10 @@ function hexToHslString(hex) {
 function applyTheme(colors) {
   const root = document.documentElement;
   const accent = colors?.accent || "#00E5FF";
-  const bg = colors?.background || "#121212";
+  const bg = colors?.background || "#F4F5F7";
   root.style.setProperty("--nb-accent", accent);
   root.style.setProperty("--nb-accent-rgb", hexToRgb(accent));
+  root.style.setProperty("--nb-accent-ink", darkenHex(accent, 0.45));
   root.style.setProperty("--nb-bg", bg);
   const hsl = hexToHslString(accent);
   if (hsl) {

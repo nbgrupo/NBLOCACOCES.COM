@@ -31,18 +31,18 @@ export default function Navbar() {
     <header
       data-testid="navbar"
       className={`fixed top-0 inset-x-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-500 ${
-        scrolled ? "glass-strong border-b border-white/10" : "bg-transparent border-b border-transparent"
+        scrolled ? "glass-strong border-b border-black/10" : "bg-transparent border-b border-transparent"
       }`}
     >
       <nav className="mx-auto max-w-7xl px-5 sm:px-8 h-16 sm:h-20 flex items-center justify-between">
         <button
           data-testid="logo-btn"
           onClick={() => scrollToId("hero")}
-          className="flex items-center gap-2 font-display font-extrabold text-lg sm:text-xl tracking-tight text-white"
+          className="flex items-center gap-2 font-display font-extrabold text-lg sm:text-xl tracking-tight text-slate-900"
         >
           {config.brand?.name?.split(" ")[0] || "NB"}
-          <span className="text-accent-nb">.</span>
-          <span className="text-white/70 font-medium text-sm hidden sm:inline">
+          <span className="text-accent-ink">.</span>
+          <span className="text-slate-600 font-medium text-sm hidden sm:inline">
             {config.brand?.name?.split(" ").slice(1).join(" ")}
           </span>
         </button>
@@ -53,7 +53,7 @@ export default function Navbar() {
               key={l.id}
               data-testid={`nav-${l.id}`}
               onClick={() => scrollToId(l.id)}
-              className="text-sm text-white/70 hover:text-white transition-colors duration-300 relative group"
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors duration-300 relative group"
             >
               {l.label}
               <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent-nb transition-all duration-300 group-hover:w-full" />
@@ -73,11 +73,11 @@ export default function Navbar() {
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <button data-testid="mobile-menu-btn" aria-label="Abrir menu" className="text-white p-2">
+              <button data-testid="mobile-menu-btn" aria-label="Abrir menu" className="text-slate-900 p-2">
                 <Menu className="h-6 w-6" />
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="glass-strong border-white/10 text-white w-72">
+            <SheetContent side="right" className="glass-strong border-black/10 text-slate-900 w-72">
               <div className="flex items-center justify-between mb-10">
                 <span className="font-display font-extrabold text-lg">
                   {config.brand?.name}
@@ -94,7 +94,7 @@ export default function Navbar() {
                     <button
                       data-testid={`mobile-nav-${l.id}`}
                       onClick={() => scrollToId(l.id)}
-                      className="text-left text-lg text-white/80 hover:text-accent-nb transition-colors"
+                      className="text-left text-lg text-slate-700 hover:text-accent-ink transition-colors"
                     >
                       {l.label}
                     </button>
