@@ -16,6 +16,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+async function uploadToServer(file) {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await axios.post(`${API}/upload`, form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return `${BACKEND_URL}${res.data.url}`;
+}
+
 function Field({ label, value, onChange, type = "text", testid }) {
   return (
     <div className="space-y-1.5">
@@ -46,20 +58,61 @@ function Area({ label, value, onChange, testid }) {
 }
 
 function ImageField({ label, value, onChange, testid }) {
+  const inputRef = useRef(null);
+  const [busy, setBusy] = useState(false);
+
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Imagem muito grande (máx. 10MB).");
+      return;
+    }
+    setBusy(true);
+    try {
+      const url = await uploadToServer(file);
+      onChange(url);
+      toast.success("Imagem enviada! Clique em Salvar para publicar.");
+    } catch (err) {
+      toast.error("Falha ao enviar a imagem.");
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="space-y-1.5">
       <Label className="text-xs text-white/60">{label}</Label>
       <div className="flex gap-2 items-center">
         {value ? (
-          <img src={value} alt="preview" className="h-12 w-12 rounded-lg object-cover border border-white/10" />
+          <img src={value} alt="preview" className="h-12 w-12 rounded-lg object-cover border border-white/10 shrink-0" />
         ) : null}
         <Input
           data-testid={testid}
           value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="URL da imagem"
-          className="bg-[#0e0e0f] border-white/10 text-white text-sm flex-1"
+          placeholder="Cole uma URL ou envie um arquivo"
+          className="bg-[#0e0e0f] border-white/10 text-white text-sm flex-1 min-w-0"
         />
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          onChange={handleFile}
+          className="hidden"
+          data-testid={testid ? `${testid}-file` : undefined}
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current && inputRef.current.click()}
+          disabled={busy}
+          aria-label="Enviar imagem do dispositivo"
+          data-testid={testid ? `${testid}-upload` : undefined}
+          className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 text-white/70 transition-colors hover:border-accent-nb hover:text-accent-nb disabled:opacity-60"
+        >
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+        </button>
       </div>
     </div>
   );
@@ -72,9 +125,6 @@ export default function AdminPanel() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const videoInputRef = useRef(null);
-
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API = `${BACKEND_URL}/api`;
 
   useEffect(() => {
     if (open) setDraft(structuredClone(config));
@@ -97,12 +147,7 @@ export default function AdminPanel() {
     }
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await axios.post(`${API}/upload`, form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const fullUrl = `${BACKEND_URL}${res.data.url}`;
+      const fullUrl = await uploadToServer(file);
       edit((d) => (d.hero.videoUrl = fullUrl));
       toast.success("Vídeo enviado! Clique em Salvar para publicar.");
     } catch (err) {
