@@ -118,6 +118,44 @@ function ImageField({ label, value, onChange, testid }) {
   );
 }
 
+function Group({ title, children, onAdd, addTestid }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-xs uppercase tracking-widest text-accent-nb">{title}</p>
+        {onAdd ? (
+          <button
+            data-testid={addTestid}
+            onClick={onAdd}
+            className="inline-flex items-center gap-1 text-xs text-accent-nb hover:underline"
+          >
+            <Plus className="h-3 w-3" /> Adicionar
+          </button>
+        ) : null}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ItemCard({ children, onRemove, removeTestid }) {
+  return (
+    <div className="space-y-2 rounded-lg border border-white/10 p-3 relative">
+      {onRemove ? (
+        <button
+          onClick={onRemove}
+          data-testid={removeTestid}
+          className="absolute top-2 right-2 text-white/40 hover:text-red-400"
+          aria-label="Remover item"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      ) : null}
+      {children}
+    </div>
+  );
+}
+
 export default function AdminPanel() {
   const { config, setConfig, saveToServer, resetConfig } = useConfig();
   const [draft, setDraft] = useState(config);
@@ -126,9 +164,10 @@ export default function AdminPanel() {
   const [uploading, setUploading] = useState(false);
   const videoInputRef = useRef(null);
 
+  // Reset draft only when the panel is opened (never mid-edit)
   useEffect(() => {
     if (open) setDraft(structuredClone(config));
-  }, [open, config]);
+  }, [open]);
 
   const edit = (mutator) =>
     setDraft((prev) => {
@@ -229,130 +268,212 @@ export default function AdminPanel() {
           </TabsList>
 
           {/* ---------- CONTEUDO ---------- */}
-          <TabsContent value="conteudo" className="space-y-6 mt-5">
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Hero</p>
+          <TabsContent value="conteudo" className="space-y-7 mt-5">
+            <Group title="Marca">
+              <Field label="Nome" value={draft.brand.name} onChange={(v) => edit((d) => (d.brand.name = v))} />
+              <Field label="Slogan" value={draft.brand.tagline} onChange={(v) => edit((d) => (d.brand.tagline = v))} />
+            </Group>
+
+            <Group title="Hero">
               <Field label="Badge" value={draft.hero.badge} onChange={(v) => edit((d) => (d.hero.badge = v))} />
               <Field label="Título linha 1" testid="edit-hero-title1" value={draft.hero.titleLine1} onChange={(v) => edit((d) => (d.hero.titleLine1 = v))} />
               <Field label="Título linha 2" value={draft.hero.titleLine2} onChange={(v) => edit((d) => (d.hero.titleLine2 = v))} />
-              <Area label="Subtítulo" value={draft.hero.subtitle} onChange={(v) => edit((d) => (d.hero.subtitle = v))} />
+              <Area label="Subtítulo (parágrafo)" testid="edit-hero-subtitle" value={draft.hero.subtitle} onChange={(v) => edit((d) => (d.hero.subtitle = v))} />
               <Field label="CTA primário" value={draft.hero.ctaPrimary} onChange={(v) => edit((d) => (d.hero.ctaPrimary = v))} />
               <Field label="CTA secundário" value={draft.hero.ctaSecondary} onChange={(v) => edit((d) => (d.hero.ctaSecondary = v))} />
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Contador</p>
+            <Group title="Contador">
               <Field label="Valor" type="number" value={draft.counter.value} onChange={(v) => edit((d) => (d.counter.value = v))} />
+              <Field label="Sufixo" value={draft.counter.suffix} onChange={(v) => edit((d) => (d.counter.suffix = v))} />
               <Field label="Legenda" value={draft.counter.label} onChange={(v) => edit((d) => (d.counter.label = v))} />
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Frota — preços</p>
-              {draft.frota.bikes.map((b, i) => (
-                <div key={b.id} className="grid grid-cols-3 gap-2 items-end">
-                  <div className="col-span-2">
-                    <Field label={`Moto ${i + 1}`} value={b.name} onChange={(v) => edit((d) => (d.frota.bikes[i].name = v))} />
+            <Group
+              title="Como Funciona"
+              addTestid="admin-add-step"
+              onAdd={() => edit((d) => d.comoFunciona.steps.push({ title: "Novo passo", desc: "Descrição do passo." }))}
+            >
+              <Field label="Título da seção" value={draft.comoFunciona.title} onChange={(v) => edit((d) => (d.comoFunciona.title = v))} />
+              <Area label="Subtítulo" value={draft.comoFunciona.subtitle} onChange={(v) => edit((d) => (d.comoFunciona.subtitle = v))} />
+              {draft.comoFunciona.steps.map((s, i) => (
+                <ItemCard key={i} removeTestid={`remove-step-${i}`} onRemove={() => edit((d) => d.comoFunciona.steps.splice(i, 1))}>
+                  <Field label={`Passo ${i + 1} — título`} value={s.title} onChange={(v) => edit((d) => (d.comoFunciona.steps[i].title = v))} />
+                  <Area label="Descrição" value={s.desc} onChange={(v) => edit((d) => (d.comoFunciona.steps[i].desc = v))} />
+                </ItemCard>
+              ))}
+            </Group>
+
+            <Group
+              title="Diferenciais"
+              addTestid="admin-add-diferencial"
+              onAdd={() => edit((d) => d.diferenciais.items.push({ icon: "sparkles", title: "Novo diferencial", desc: "Descrição." }))}
+            >
+              <Field label="Título da seção" value={draft.diferenciais.title} onChange={(v) => edit((d) => (d.diferenciais.title = v))} />
+              <Area label="Subtítulo" value={draft.diferenciais.subtitle} onChange={(v) => edit((d) => (d.diferenciais.subtitle = v))} />
+              {draft.diferenciais.items.map((it, i) => (
+                <ItemCard key={i} removeTestid={`remove-diferencial-${i}`} onRemove={() => edit((d) => d.diferenciais.items.splice(i, 1))}>
+                  <Field label="Ícone (wallet, shield, wrench, repeat, smartphone, clock)" value={it.icon} onChange={(v) => edit((d) => (d.diferenciais.items[i].icon = v))} />
+                  <Field label="Título" value={it.title} onChange={(v) => edit((d) => (d.diferenciais.items[i].title = v))} />
+                  <Area label="Descrição" value={it.desc} onChange={(v) => edit((d) => (d.diferenciais.items[i].desc = v))} />
+                </ItemCard>
+              ))}
+            </Group>
+
+            <Group
+              title="Frota — categorias"
+              addTestid="admin-add-category"
+              onAdd={() => edit((d) => d.frota.categories.push("Nova"))}
+            >
+              <Field label="Título da seção" value={draft.frota.title} onChange={(v) => edit((d) => (d.frota.title = v))} />
+              <Area label="Subtítulo" value={draft.frota.subtitle} onChange={(v) => edit((d) => (d.frota.subtitle = v))} />
+              {draft.frota.categories.map((cat, i) => (
+                <div key={i} className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    <Field label={`Categoria ${i + 1}`} value={cat} onChange={(v) => edit((d) => (d.frota.categories[i] = v))} />
                   </div>
-                  <Field label="R$/mês" type="number" testid={`edit-bike-price-${b.id}`} value={b.price} onChange={(v) => edit((d) => (d.frota.bikes[i].price = v))} />
+                  <button
+                    onClick={() => edit((d) => d.frota.categories.splice(i, 1))}
+                    className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-red-400 mb-0.5"
+                    aria-label="Remover categoria"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               ))}
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Depoimentos</p>
+            <Group
+              title="Frota — motos"
+              addTestid="admin-add-bike"
+              onAdd={() =>
+                edit((d) =>
+                  d.frota.bikes.push({
+                    id: `bike-${Date.now()}`,
+                    name: "Nova moto",
+                    category: "Street",
+                    price: 399,
+                    specs: "",
+                    image: "",
+                  })
+                )
+              }
+            >
+              {draft.frota.bikes.map((b, i) => (
+                <ItemCard key={b.id} removeTestid={`remove-bike-${i}`} onRemove={() => edit((d) => d.frota.bikes.splice(i, 1))}>
+                  <Field label="Nome" value={b.name} onChange={(v) => edit((d) => (d.frota.bikes[i].name = v))} />
+                  <div className="grid grid-cols-2 gap-2">
+                    <Field label="Categoria" value={b.category} onChange={(v) => edit((d) => (d.frota.bikes[i].category = v))} />
+                    <Field label="R$/mês" type="number" testid={`edit-bike-price-${b.id}`} value={b.price} onChange={(v) => edit((d) => (d.frota.bikes[i].price = v))} />
+                  </div>
+                  <Field label="Ficha (specs)" value={b.specs} onChange={(v) => edit((d) => (d.frota.bikes[i].specs = v))} />
+                  <ImageField label="Imagem" testid={`edit-bike-image-${b.id}`} value={b.image} onChange={(v) => edit((d) => (d.frota.bikes[i].image = v))} />
+                </ItemCard>
+              ))}
+            </Group>
+
+            <Group
+              title="Depoimentos"
+              addTestid="admin-add-depoimento"
+              onAdd={() => edit((d) => d.depoimentos.items.push({ name: "Nome", role: "Cargo · Cidade", rating: 5, text: "Depoimento...", photo: "" }))}
+            >
+              <Field label="Título da seção" value={draft.depoimentos.title} onChange={(v) => edit((d) => (d.depoimentos.title = v))} />
               {draft.depoimentos.items.map((t, i) => (
-                <div key={i} className="space-y-2 rounded-lg border border-white/10 p-3">
+                <ItemCard key={i} removeTestid={`remove-depoimento-${i}`} onRemove={() => edit((d) => d.depoimentos.items.splice(i, 1))}>
                   <Field label="Nome" value={t.name} onChange={(v) => edit((d) => (d.depoimentos.items[i].name = v))} />
                   <Field label="Cargo/Local" value={t.role} onChange={(v) => edit((d) => (d.depoimentos.items[i].role = v))} />
                   <Area label="Depoimento" value={t.text} onChange={(v) => edit((d) => (d.depoimentos.items[i].text = v))} />
                   <Field label="Nota (1-5)" type="number" value={t.rating} onChange={(v) => edit((d) => (d.depoimentos.items[i].rating = v))} />
-                </div>
+                  <ImageField label="Foto" testid={`edit-depo-image-${i}`} value={t.photo} onChange={(v) => edit((d) => (d.depoimentos.items[i].photo = v))} />
+                </ItemCard>
               ))}
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs uppercase tracking-widest text-accent-nb">FAQ</p>
-                <button
-                  data-testid="admin-add-faq"
-                  onClick={() => edit((d) => d.faq.items.push({ q: "Nova pergunta", a: "Nova resposta" }))}
-                  className="inline-flex items-center gap-1 text-xs text-accent-nb"
-                >
-                  <Plus className="h-3 w-3" /> Adicionar
-                </button>
-              </div>
+            <Group
+              title="FAQ"
+              addTestid="admin-add-faq"
+              onAdd={() => edit((d) => d.faq.items.push({ q: "Nova pergunta", a: "Nova resposta" }))}
+            >
+              <Field label="Título da seção" value={draft.faq.title} onChange={(v) => edit((d) => (d.faq.title = v))} />
               {draft.faq.items.map((item, i) => (
-                <div key={i} className="space-y-2 rounded-lg border border-white/10 p-3 relative">
-                  <button
-                    onClick={() => edit((d) => d.faq.items.splice(i, 1))}
-                    className="absolute top-2 right-2 text-white/40 hover:text-red-400"
-                    aria-label="Remover"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                <ItemCard key={i} removeTestid={`remove-faq-${i}`} onRemove={() => edit((d) => d.faq.items.splice(i, 1))}>
                   <Field label="Pergunta" value={item.q} onChange={(v) => edit((d) => (d.faq.items[i].q = v))} />
                   <Area label="Resposta" value={item.a} onChange={(v) => edit((d) => (d.faq.items[i].a = v))} />
-                </div>
+                </ItemCard>
               ))}
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">CTA Final</p>
+            <Group title="Localização (textos)">
+              <Field label="Título da seção" value={draft.localizacao.title} onChange={(v) => edit((d) => (d.localizacao.title = v))} />
+              <Area label="Subtítulo" value={draft.localizacao.subtitle} onChange={(v) => edit((d) => (d.localizacao.subtitle = v))} />
+            </Group>
+
+            <Group title="CTA Final">
               <Area label="Título" value={draft.ctaFinal.title} onChange={(v) => edit((d) => (d.ctaFinal.title = v))} />
+              <Area label="Subtítulo" value={draft.ctaFinal.subtitle} onChange={(v) => edit((d) => (d.ctaFinal.subtitle = v))} />
               <Field label="Botão" value={draft.ctaFinal.button} onChange={(v) => edit((d) => (d.ctaFinal.button = v))} />
-            </div>
+            </Group>
           </TabsContent>
 
           {/* ---------- CORES ---------- */}
           <TabsContent value="cores" className="space-y-6 mt-5">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-lg border border-white/10 p-4">
-                <div>
-                  <p className="text-sm text-white">Cor de acento</p>
-                  <p className="text-xs text-white/50">{draft.colors.accent}</p>
-                </div>
-                <input
-                  data-testid="edit-color-accent"
-                  type="color"
-                  value={draft.colors.accent}
-                  onChange={(e) => edit((d) => (d.colors.accent = e.target.value))}
-                  className="h-10 w-16 rounded cursor-pointer bg-transparent"
-                />
+            <div className="flex items-center justify-between rounded-lg border border-white/10 p-4">
+              <div>
+                <p className="text-sm text-white">Cor de acento</p>
+                <p className="text-xs text-white/50">{draft.colors.accent}</p>
               </div>
-              <div className="flex items-center justify-between rounded-lg border border-white/10 p-4">
-                <div>
-                  <p className="text-sm text-white">Cor de fundo</p>
-                  <p className="text-xs text-white/50">{draft.colors.background}</p>
-                </div>
-                <input
-                  data-testid="edit-color-bg"
-                  type="color"
-                  value={draft.colors.background}
-                  onChange={(e) => edit((d) => (d.colors.background = e.target.value))}
-                  className="h-10 w-16 rounded cursor-pointer bg-transparent"
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["#00E5FF", "#00FF94", "#FF4D4D", "#FFB800", "#B24BF3", "#FF5CA8"].map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => edit((d) => (d.colors.accent = c))}
-                    className="h-9 w-9 rounded-full border-2 border-white/20"
-                    style={{ backgroundColor: c }}
-                    aria-label={`Cor ${c}`}
-                  />
-                ))}
-              </div>
-              <p className="text-xs text-white/40">Clique em &quot;Salvar&quot; para publicar. A pré-visualização é aplicada ao salvar.</p>
+              <input
+                data-testid="edit-color-accent"
+                type="color"
+                value={draft.colors.accent}
+                onChange={(e) => edit((d) => (d.colors.accent = e.target.value))}
+                className="h-10 w-16 rounded cursor-pointer bg-transparent"
+              />
             </div>
+            <div className="flex items-center justify-between rounded-lg border border-white/10 p-4">
+              <div>
+                <p className="text-sm text-white">Cor de fundo</p>
+                <p className="text-xs text-white/50">{draft.colors.background}</p>
+              </div>
+              <input
+                data-testid="edit-color-bg"
+                type="color"
+                value={draft.colors.background}
+                onChange={(e) => edit((d) => (d.colors.background = e.target.value))}
+                className="h-10 w-16 rounded cursor-pointer bg-transparent"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["#00E5FF", "#2563EB", "#16A34A", "#EA580C", "#DB2777", "#7C3AED"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => edit((d) => (d.colors.accent = c))}
+                  className="h-9 w-9 rounded-full border-2 border-white/20"
+                  style={{ backgroundColor: c }}
+                  aria-label={`Cor ${c}`}
+                />
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["#F4F5F7", "#FFFFFF", "#EEF2FF", "#F1F5F9", "#FFF7ED", "#0E1116"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => edit((d) => (d.colors.background = c))}
+                  className="h-9 w-9 rounded-full border-2 border-white/20"
+                  style={{ backgroundColor: c }}
+                  aria-label={`Fundo ${c}`}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-white/40">Clique em &quot;Salvar&quot; para publicar as cores.</p>
           </TabsContent>
 
           {/* ---------- IMAGENS ---------- */}
           <TabsContent value="imagens" className="space-y-6 mt-5">
             <ImageField label="Imagem do Hero" testid="edit-hero-image" value={draft.hero.image} onChange={(v) => edit((d) => (d.hero.image = v))} />
+
             <div className="space-y-3 rounded-lg border border-accent-nb/30 p-3">
               <p className="text-xs uppercase tracking-widest text-accent-nb">Vídeo de fundo do Hero</p>
-
               <input
                 ref={videoInputRef}
                 type="file"
@@ -377,7 +498,6 @@ export default function AdminPanel() {
                   </>
                 )}
               </button>
-
               {draft.hero.videoUrl ? (
                 <div className="relative overflow-hidden rounded-lg border border-white/10">
                   <video src={draft.hero.videoUrl} className="w-full h-28 object-cover" muted loop autoPlay playsInline />
@@ -395,57 +515,40 @@ export default function AdminPanel() {
                   <Video className="h-4 w-4" /> Nenhum vídeo. Usando fundo padrão.
                 </div>
               )}
+              <Field label="Ou cole uma URL de vídeo (MP4/WebM)" testid="edit-hero-video" value={draft.hero.videoUrl} onChange={(v) => edit((d) => (d.hero.videoUrl = v))} />
+              <ImageField label="Imagem de capa (poster)" testid="edit-hero-video-poster" value={draft.hero.videoPoster} onChange={(v) => edit((d) => (d.hero.videoPoster = v))} />
+            </div>
 
-              <Field
-                label="Ou cole uma URL de vídeo (MP4/WebM)"
-                testid="edit-hero-video"
-                value={draft.hero.videoUrl}
-                onChange={(v) => edit((d) => (d.hero.videoUrl = v))}
-              />
-              <ImageField
-                label="Imagem de capa (poster)"
-                testid="edit-hero-video-poster"
-                value={draft.hero.videoPoster}
-                onChange={(v) => edit((d) => (d.hero.videoPoster = v))}
-              />
-              <p className="text-[11px] text-white/40">
-                Envie um arquivo (máx. 60MB) ou cole um link. Deixe em branco para usar o fundo padrão.
-              </p>
-            </div>
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Frota</p>
+            <Group title="Frota">
               {draft.frota.bikes.map((b, i) => (
-                <ImageField key={b.id} label={b.name} value={b.image} onChange={(v) => edit((d) => (d.frota.bikes[i].image = v))} />
+                <ImageField key={b.id} label={b.name} testid={`edit-bike-image2-${b.id}`} value={b.image} onChange={(v) => edit((d) => (d.frota.bikes[i].image = v))} />
               ))}
-            </div>
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Depoimentos</p>
+            </Group>
+
+            <Group title="Depoimentos">
               {draft.depoimentos.items.map((t, i) => (
-                <ImageField key={i} label={t.name} value={t.photo} onChange={(v) => edit((d) => (d.depoimentos.items[i].photo = v))} />
+                <ImageField key={i} label={t.name} testid={`edit-depo-image2-${i}`} value={t.photo} onChange={(v) => edit((d) => (d.depoimentos.items[i].photo = v))} />
               ))}
-            </div>
+            </Group>
           </TabsContent>
 
           {/* ---------- CONTATO ---------- */}
           <TabsContent value="contato" className="space-y-6 mt-5">
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Localização</p>
-              <Field label="Endereço" value={draft.localizacao.address} onChange={(v) => edit((d) => (d.localizacao.address = v))} />
+            <Group title="Localização">
+              <Field label="Endereço" testid="edit-local-address" value={draft.localizacao.address} onChange={(v) => edit((d) => (d.localizacao.address = v))} />
               <Field label="Horário" value={draft.localizacao.hours} onChange={(v) => edit((d) => (d.localizacao.hours = v))} />
               <Field label="Telefone" value={draft.localizacao.phone} onChange={(v) => edit((d) => (d.localizacao.phone = v))} />
               <Field label="WhatsApp" value={draft.localizacao.whatsapp} onChange={(v) => edit((d) => (d.localizacao.whatsapp = v))} />
               <Area label="Google Maps embed URL" value={draft.localizacao.mapEmbed} onChange={(v) => edit((d) => (d.localizacao.mapEmbed = v))} />
               <Area label="Link 'Como chegar'" value={draft.localizacao.mapsLink} onChange={(v) => edit((d) => (d.localizacao.mapsLink = v))} />
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">WhatsApp flutuante</p>
+            <Group title="WhatsApp flutuante">
               <Field label="Número (só dígitos, com DDI)" testid="edit-whatsapp-number" value={draft.whatsapp.number} onChange={(v) => edit((d) => (d.whatsapp.number = v))} />
               <Area label="Mensagem pré-preenchida" value={draft.whatsapp.message} onChange={(v) => edit((d) => (d.whatsapp.message = v))} />
-            </div>
+            </Group>
 
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-accent-nb">Footer / Rodapé</p>
+            <Group title="Footer / Rodapé">
               <Area label="Descrição" value={draft.footer.description} onChange={(v) => edit((d) => (d.footer.description = v))} />
               <Field label="Instagram (@)" value={draft.footer.instagram} onChange={(v) => edit((d) => { d.footer.instagram = v; d.footer.contact.instagram = v; })} />
               <Field label="Instagram URL" value={draft.footer.instagramUrl} onChange={(v) => edit((d) => (d.footer.instagramUrl = v))} />
@@ -457,7 +560,7 @@ export default function AdminPanel() {
               <Field label="WhatsApp" value={draft.footer.contact.whatsapp} onChange={(v) => edit((d) => (d.footer.contact.whatsapp = v))} />
               <Field label="E-mail" value={draft.footer.contact.email} onChange={(v) => edit((d) => (d.footer.contact.email = v))} />
               <Field label="CNPJ" value={draft.footer.cnpj} onChange={(v) => edit((d) => (d.footer.cnpj = v))} />
-            </div>
+            </Group>
           </TabsContent>
         </Tabs>
       </SheetContent>
