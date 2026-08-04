@@ -67,14 +67,14 @@ export default function Localizacao() {
                   onClick={openMaps}
                   className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-accent-nb px-6 py-3.5 font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.03]"
                 >
-                  <Navigation className="h-4 w-4" /> Como chegar
+                  <Navigation className="h-4 w-4" /> {data.comoChegar || "Como chegar"}
                 </button>
                 <button
                   data-testid="local-whatsapp-btn"
                   onClick={openWhats}
                   className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-black/15 px-6 py-3.5 font-semibold text-slate-900 transition-colors duration-300 hover:border-accent-nb hover:text-accent-ink"
                 >
-                  <MessageCircle className="h-4 w-4" /> Falar no WhatsApp
+                  <MessageCircle className="h-4 w-4" /> {data.falarWhats || "Falar no WhatsApp"}
                 </button>
               </div>
             </div>

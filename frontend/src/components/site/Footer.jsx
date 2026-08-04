@@ -3,16 +3,10 @@ import { Instagram, MapPin, Phone, Mail, MessageCircle } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { scrollToId } from "@/components/site/shared";
 
-const QUICK_LINKS = [
-  { label: "Início", id: "hero" },
-  { label: "Como Funciona", id: "como-funciona" },
-  { label: "Frota", id: "frota" },
-  { label: "FAQ", id: "faq" },
-];
-
 export default function Footer() {
   const { config } = useConfig();
   const f = config.footer;
+  const quickLinks = config.navbar?.links || [];
 
   return (
     <footer data-testid="footer" className="relative bg-[#EAECEF] border-t border-black/10 pt-16 pb-8">
@@ -41,9 +35,11 @@ export default function Footer() {
 
           {/* Col 2 */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">Links rápidos</h4>
+            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">
+              {f.headings?.links || "Links rápidos"}
+            </h4>
             <ul className="mt-4 space-y-3">
-              {QUICK_LINKS.map((l) => (
+              {quickLinks.map((l) => (
                 <li key={l.id}>
                   <button
                     onClick={() => scrollToId(l.id)}
@@ -59,7 +55,9 @@ export default function Footer() {
 
           {/* Col 3 */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">Endereço</h4>
+            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">
+              {f.headings?.address || "Endereço"}
+            </h4>
             <div className="mt-4 flex gap-2 text-sm text-slate-500">
               <MapPin className="h-4 w-4 text-accent-ink shrink-0 mt-0.5" />
               <address className="not-italic leading-relaxed">
@@ -76,7 +74,9 @@ export default function Footer() {
 
           {/* Col 4 */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">Contato</h4>
+            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">
+              {f.headings?.contact || "Contato"}
+            </h4>
             <ul className="mt-4 space-y-3 text-sm text-slate-500">
               <li className="flex items-center gap-2">
                 <MessageCircle className="h-4 w-4 text-accent-ink" /> {f.contact.whatsapp}
@@ -99,8 +99,12 @@ export default function Footer() {
             {f.cnpj} · © {new Date().getFullYear()} {config.brand?.name}
           </p>
           <div className="flex items-center gap-6 text-xs text-slate-400">
-            <button className="hover:text-slate-600 transition-colors">Política de Privacidade</button>
-            <button className="hover:text-slate-600 transition-colors">Termos de Uso</button>
+            <button className="hover:text-slate-600 transition-colors">
+              {f.legal?.privacy || "Política de Privacidade"}
+            </button>
+            <button className="hover:text-slate-600 transition-colors">
+              {f.legal?.terms || "Termos de Uso"}
+            </button>
           </div>
         </div>
       </div>

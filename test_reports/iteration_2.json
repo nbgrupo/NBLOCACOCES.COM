@@ -1,0 +1,53 @@
+{
+  "summary": "Iteration 2 frontend testing focused on new editability features: marquee, price suffix, CEP-based map update, footer headings/legal, navbar in Admin, and localizacao button texts. All 12 specified features verified and passing.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Footer headings",
+        "issues": [
+          "Footer headings (Links rápidos, Endereço, Contato) are rendered via CSS `uppercase` class which transforms them visually. The config values are lowercase ('Links rápidos') but appear as 'LINKS RÁPIDOS'. This is expected behavior per the design, not a bug."
+        ]
+      }
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_2.json"],
+  "feature_test_results": {
+    "marquee_words_from_config": "PASS - All 5 words (SEM ENTRADA, 100% DIGITAL, TUDO INCLUSO, TROCA FLEXÍVEL, COBERTURA 24H) from defaultConfig render in marquee",
+    "hero_price_period": "PASS - Hero overlay shows 'A PARTIR DE' and 'R$ X/mês' using config.global.priceFromLabel and config.global.pricePeriod",
+    "frota_cards_price_period": "PASS - Each bike card shows 'R$ X/mês' using config.global.pricePeriod",
+    "admin_panel_opens": "PASS - Gear button (data-testid=admin-gear-btn) opens the Sheet panel correctly",
+    "admin_conteudo_navbar": "PASS - NAVBAR section has CTA (desktop)='Assinar', CTA (mobile)='Assinar agora', and 4 link fields",
+    "admin_conteudo_marquee": "PASS - FAIXA ANIMADA section has Separador field, 5 word fields each with remove button, + Adicionar button works (6→5 on remove)",
+    "admin_conteudo_precos": "PASS - PREÇOS section has 'Sufixo de período' (value='mês') and 'Rótulo a partir de' (value='a partir de')",
+    "admin_contato_cep_map_update": "PASS - Typing in CEP/address field immediately updates the map embed URL (e.g. 'Rua Oscar Freire' → maps?q=Rua%20Oscar%20Freire...)",
+    "admin_contato_button_texts": "PASS - 'Texto do botão \"Como chegar\"' and 'Texto do botão \"WhatsApp\"' fields present and populated",
+    "admin_contato_footer_headings": "PASS - Fields for 'Título coluna Links rápidos', 'Título coluna Endereço', 'Título coluna Contato', 'Texto: Política de Privacidade', 'Texto: Termos de Uso' all present",
+    "footer_headings_from_config": "PASS - Footer renders headings from config.footer.headings (visible as LINKS RÁPIDOS, ENDEREÇO, CONTATO via CSS uppercase)",
+    "localizacao_buttons_from_config": "PASS - 'Como chegar' and 'Falar no WhatsApp' buttons render from config.localizacao.comoChegar and .falarWhats"
+  },
+  "action_items": [
+    "From iteration 1 (still pending): Fix bg-accent-nb transparent background issue caused by incompatible CSS variable channel format in hexToRgb / tailwind.config.js.",
+    "From iteration 1 (still pending): App/section components hardcode bg colors so --nb-bg body change has no visible effect on page theme."
+  ],
+  "critical_code_review_comments": [
+    "AdminPanel.jsx is 635 lines — approaching the 700-line limit; consider splitting into sub-components (MarqueeAdmin, PricesAdmin, ContactAdmin) for maintainability.",
+    "CEP onChange in AdminPanel sets mapEmbed with encodeURIComponent which generates %20-style encoding while the original default config uses + (plus) style. Both work for Google Maps but are inconsistent — minor cosmetic issue.",
+    "Saved config from previous sessions has non-default values (price 369.99, video URL, counter 1537). This is expected persistence behavior, not a bug."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only testing)",
+    "frontend": "100% (12/12 features pass)"
+  },
+  "seed_data_creation": "No seed data created. Admin Panel was used to test CEP field and marquee add/remove, but changes were NOT saved (no 'Salvar' click).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 12 new editability features (marquee, price suffix, CEP map update, footer headings/legal, navbar admin, localizacao button texts) are working correctly. Remaining open items from iteration 1: accent color bg-accent-nb transparent issue and body background theming. Current live config has non-default values (price 369.99, video, counter 1537) from previous manual edits — normal persistence.",
+  "rca_of_issue": "No bugs found in this iteration. All features implemented correctly per code review of EditorialMarquee.jsx, Hero.jsx, Frota.jsx, Footer.jsx, Localizacao.jsx, and AdminPanel.jsx."
+}

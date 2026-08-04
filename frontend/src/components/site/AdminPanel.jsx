@@ -278,6 +278,45 @@ export default function AdminPanel() {
               <Field label="Slogan" value={draft.brand.tagline} onChange={(v) => edit((d) => (d.brand.tagline = v))} />
             </Group>
 
+            <Group title="Navbar">
+              <Field label="CTA (desktop)" value={draft.navbar?.cta} onChange={(v) => edit((d) => (d.navbar.cta = v))} />
+              <Field label="CTA (mobile)" value={draft.navbar?.ctaMobile} onChange={(v) => edit((d) => (d.navbar.ctaMobile = v))} />
+              {(draft.navbar?.links || []).map((l, i) => (
+                <div key={i} className="grid grid-cols-2 gap-2">
+                  <Field label={`Link ${i + 1} — nome`} value={l.label} onChange={(v) => edit((d) => (d.navbar.links[i].label = v))} />
+                  <Field label="ID âncora" value={l.id} onChange={(v) => edit((d) => (d.navbar.links[i].id = v))} />
+                </div>
+              ))}
+            </Group>
+
+            <Group
+              title="Faixa animada (Marquee)"
+              addTestid="admin-add-marquee-word"
+              onAdd={() => edit((d) => d.marquee.words.push("NOVO TEXTO"))}
+            >
+              <Field label="Separador" value={draft.marquee?.separator} onChange={(v) => edit((d) => (d.marquee.separator = v))} />
+              {(draft.marquee?.words || []).map((w, i) => (
+                <div key={i} className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    <Field label={`Palavra ${i + 1}`} value={w} onChange={(v) => edit((d) => (d.marquee.words[i] = v))} />
+                  </div>
+                  <button
+                    onClick={() => edit((d) => d.marquee.words.splice(i, 1))}
+                    data-testid={`remove-marquee-${i}`}
+                    className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-red-400 mb-0.5"
+                    aria-label="Remover palavra"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+            </Group>
+
+            <Group title="Preços">
+              <Field label='Sufixo de período (ex: "mês", "semana")' value={draft.global?.pricePeriod} onChange={(v) => edit((d) => { if (!d.global) d.global = {}; d.global.pricePeriod = v; })} />
+              <Field label='Rótulo "a partir de"' value={draft.global?.priceFromLabel} onChange={(v) => edit((d) => { if (!d.global) d.global = {}; d.global.priceFromLabel = v; })} />
+            </Group>
+
             <Group title="Hero">
               <Field label="Badge" value={draft.hero.badge} onChange={(v) => edit((d) => (d.hero.badge = v))} />
               <Field label="Título linha 1" testid="edit-hero-title1" value={draft.hero.titleLine1} onChange={(v) => edit((d) => (d.hero.titleLine1 = v))} />
@@ -408,7 +447,7 @@ export default function AdminPanel() {
               ))}
             </Group>
 
-            <Group title="Localização (textos)">
+            <Group title="Localização (seção)">
               <Field label="Título da seção" value={draft.localizacao.title} onChange={(v) => edit((d) => (d.localizacao.title = v))} />
               <Area label="Subtítulo" value={draft.localizacao.subtitle} onChange={(v) => edit((d) => (d.localizacao.subtitle = v))} />
             </Group>
@@ -544,8 +583,24 @@ export default function AdminPanel() {
               <Field label="Horário" value={draft.localizacao.hours} onChange={(v) => edit((d) => (d.localizacao.hours = v))} />
               <Field label="Telefone" value={draft.localizacao.phone} onChange={(v) => edit((d) => (d.localizacao.phone = v))} />
               <Field label="WhatsApp" value={draft.localizacao.whatsapp} onChange={(v) => edit((d) => (d.localizacao.whatsapp = v))} />
-              <Area label="Google Maps embed URL" value={draft.localizacao.mapEmbed} onChange={(v) => edit((d) => (d.localizacao.mapEmbed = v))} />
-              <Area label="Link 'Como chegar'" value={draft.localizacao.mapsLink} onChange={(v) => edit((d) => (d.localizacao.mapsLink = v))} />
+              <div className="rounded-lg border border-accent-nb/30 p-3 space-y-3">
+                <p className="text-xs uppercase tracking-widest text-accent-nb">Mapa (CEP ou endereço completo)</p>
+                <Field
+                  label="CEP ou endereço (ex: 01310-100 ou Av. Paulista, 1000, São Paulo)"
+                  testid="edit-local-cep"
+                  value={draft.localizacao.mapQuery || ""}
+                  onChange={(v) => edit((d) => {
+                    d.localizacao.mapQuery = v;
+                    const q = encodeURIComponent(v);
+                    d.localizacao.mapEmbed = `https://www.google.com/maps?q=${q}&output=embed`;
+                    d.localizacao.mapsLink = `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+                  })}
+                />
+                <p className="text-xs text-white/40">Preencha o campo acima e o mapa será atualizado automaticamente. Ou edite a URL diretamente:</p>
+                <Area label="URL embed do mapa (avançado)" value={draft.localizacao.mapEmbed} onChange={(v) => edit((d) => (d.localizacao.mapEmbed = v))} />
+              </div>
+              <Field label='Texto do botão "Como chegar"' value={draft.localizacao.comoChegar} onChange={(v) => edit((d) => (d.localizacao.comoChegar = v))} />
+              <Field label='Texto do botão "WhatsApp"' value={draft.localizacao.falarWhats} onChange={(v) => edit((d) => (d.localizacao.falarWhats = v))} />
             </Group>
 
             <Group title="WhatsApp flutuante">
@@ -565,6 +620,11 @@ export default function AdminPanel() {
               <Field label="WhatsApp" value={draft.footer.contact.whatsapp} onChange={(v) => edit((d) => (d.footer.contact.whatsapp = v))} />
               <Field label="E-mail" value={draft.footer.contact.email} onChange={(v) => edit((d) => (d.footer.contact.email = v))} />
               <Field label="CNPJ" value={draft.footer.cnpj} onChange={(v) => edit((d) => (d.footer.cnpj = v))} />
+              <Field label='Título coluna "Links rápidos"' value={draft.footer.headings?.links} onChange={(v) => edit((d) => { if (!d.footer.headings) d.footer.headings = {}; d.footer.headings.links = v; })} />
+              <Field label='Título coluna "Endereço"' value={draft.footer.headings?.address} onChange={(v) => edit((d) => { if (!d.footer.headings) d.footer.headings = {}; d.footer.headings.address = v; })} />
+              <Field label='Título coluna "Contato"' value={draft.footer.headings?.contact} onChange={(v) => edit((d) => { if (!d.footer.headings) d.footer.headings = {}; d.footer.headings.contact = v; })} />
+              <Field label="Texto: Política de Privacidade" value={draft.footer.legal?.privacy} onChange={(v) => edit((d) => { if (!d.footer.legal) d.footer.legal = {}; d.footer.legal.privacy = v; })} />
+              <Field label="Texto: Termos de Uso" value={draft.footer.legal?.terms} onChange={(v) => edit((d) => { if (!d.footer.legal) d.footer.legal = {}; d.footer.legal.terms = v; })} />
             </Group>
           </TabsContent>
         </Tabs>

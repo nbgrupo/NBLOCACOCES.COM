@@ -157,10 +157,10 @@ export default function Hero() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                 <div className="absolute bottom-5 left-5 glass rounded-2xl px-5 py-3">
-                  <p className="text-xs text-slate-500 uppercase tracking-widest">a partir de</p>
+                  <p className="text-xs text-slate-500 uppercase tracking-widest">{config.global?.priceFromLabel || "a partir de"}</p>
                   <p className="font-display font-bold text-2xl text-slate-900">
                     R$ {config.frota?.bikes?.[0]?.price}
-                    <span className="text-sm font-normal text-slate-500">/mês</span>
+                    <span className="text-sm font-normal text-slate-500">/{config.global?.pricePeriod || "mês"}</span>
                   </p>
                 </div>
               </div>

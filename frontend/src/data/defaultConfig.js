@@ -6,6 +6,10 @@ const defaultConfig = {
     accent: "#00E5FF",
     background: "#F4F5F7",
   },
+  global: {
+    pricePeriod: "mês",
+    priceFromLabel: "a partir de",
+  },
   brand: {
     name: "NB Locações",
     tagline: "Assinatura de motos",
@@ -22,6 +26,7 @@ const defaultConfig = {
   },
   marquee: {
     words: ["SEM ENTRADA", "100% DIGITAL", "TUDO INCLUSO", "TROCA FLEXÍVEL", "COBERTURA 24H"],
+    separator: "/",
   },
   hero: {
     badge: "Plano Conquiste",
@@ -180,6 +185,7 @@ const defaultConfig = {
     hours: "Seg a Sex: 08h às 18h · Sáb: 08h às 13h",
     phone: "(11) 4000-0000",
     whatsapp: "(11) 90000-0000",
+    mapQuery: "Avenida Paulista, São Paulo, SP",
     mapEmbed:
       "https://www.google.com/maps?q=Avenida+Paulista,+Sao+Paulo&output=embed",
     mapsLink: "https://www.google.com/maps/dir/?api=1&destination=Avenida+Paulista+Sao+Paulo",

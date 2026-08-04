@@ -97,10 +97,10 @@ export default function Frota() {
                     <p className="text-sm text-slate-400 mt-1">{bike.specs}</p>
                     <div className="mt-5 flex items-end justify-between">
                       <div>
-                        <p className="text-xs text-slate-400 uppercase tracking-widest">a partir de</p>
+                        <p className="text-xs text-slate-400 uppercase tracking-widest">{config.global?.priceFromLabel || "a partir de"}</p>
                         <p className="font-display font-bold text-2xl text-slate-900">
                           R$ {bike.price}
-                          <span className="text-sm font-normal text-slate-500">/mês</span>
+                          <span className="text-sm font-normal text-slate-500">/{config.global?.pricePeriod || "mês"}</span>
                         </p>
                       </div>
                       <button
