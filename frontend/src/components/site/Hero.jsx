@@ -134,7 +134,7 @@ export default function Hero() {
             >
               <div
                 className="absolute right-6 top-10 h-72 w-72 rounded-full"
-                style={{ background: "radial-gradient(circle, rgba(var(--nb-accent-rgb),0.55), transparent 70%)" }}
+                style={{ background: "radial-gradient(circle, rgb(var(--nb-accent-rgb) / 0.55), transparent 70%)" }}
               />
             </motion.div>
             <motion.div
@@ -145,12 +145,16 @@ export default function Hero() {
               className="relative"
             >
               <div className="relative overflow-hidden rounded-[2rem] border border-black/10">
-                <img
-                  src={hero.image}
-                  alt="Moto premium NB Locações"
-                  loading="eager"
-                  className="w-full h-[380px] sm:h-[520px] object-cover"
-                />
+                {hero.image ? (
+                  <img
+                    src={hero.image}
+                    alt="Moto premium NB Locações"
+                    loading="eager"
+                    className="w-full h-[380px] sm:h-[520px] object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-[380px] sm:h-[520px] bg-slate-100" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                 <div className="absolute bottom-5 left-5 glass rounded-2xl px-5 py-3">
                   <p className="text-xs text-slate-500 uppercase tracking-widest">a partir de</p>

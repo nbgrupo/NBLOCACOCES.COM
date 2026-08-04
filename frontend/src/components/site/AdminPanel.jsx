@@ -8,6 +8,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -246,6 +247,9 @@ export default function AdminPanel() {
           <SheetTitle className="text-white font-display flex items-center gap-2">
             <Settings className="h-4 w-4 text-accent-nb" /> Painel de Configurações
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Edite todos os textos, cores, imagens e informações de contato do site.
+          </SheetDescription>
           <div className="flex gap-2 pt-2">
             <Button data-testid="admin-save-btn" onClick={handleSave} disabled={saving} size="sm" className="flex-1 bg-accent-nb text-[#0a0a0a] hover:bg-accent-nb/90">
               <Save className="h-4 w-4 mr-1" /> Salvar
@@ -334,6 +338,7 @@ export default function AdminPanel() {
                   </div>
                   <button
                     onClick={() => edit((d) => d.frota.categories.splice(i, 1))}
+                    data-testid={`remove-category-${i}`}
                     className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-red-400 mb-0.5"
                     aria-label="Remover categoria"
                   >
@@ -354,7 +359,7 @@ export default function AdminPanel() {
                     category: "Street",
                     price: 399,
                     specs: "",
-                    image: "",
+                    image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&q=60",
                   })
                 )
               }
@@ -375,7 +380,7 @@ export default function AdminPanel() {
             <Group
               title="Depoimentos"
               addTestid="admin-add-depoimento"
-              onAdd={() => edit((d) => d.depoimentos.items.push({ name: "Nome", role: "Cargo · Cidade", rating: 5, text: "Depoimento...", photo: "" }))}
+              onAdd={() => edit((d) => d.depoimentos.items.push({ name: "Nome", role: "Cargo · Cidade", rating: 5, text: "Depoimento...", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=60" }))}
             >
               <Field label="Título da seção" value={draft.depoimentos.title} onChange={(v) => edit((d) => (d.depoimentos.title = v))} />
               {draft.depoimentos.items.map((t, i) => (

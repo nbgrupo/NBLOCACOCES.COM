@@ -60,7 +60,7 @@ export default function Diferenciais() {
                 <div
                   aria-hidden="true"
                   className="absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-3xl"
-                  style={{ background: "radial-gradient(circle, rgba(var(--nb-accent-rgb),0.25), transparent 70%)" }}
+                  style={{ background: "radial-gradient(circle, rgb(var(--nb-accent-rgb) / 0.25), transparent 70%)" }}
                 />
                 <div className="relative z-10 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-nb/10 text-accent-ink">
                   <Icon className="h-6 w-6" />

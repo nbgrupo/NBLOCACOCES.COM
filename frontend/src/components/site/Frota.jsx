@@ -74,14 +74,20 @@ export default function Frota() {
                     <div
                       aria-hidden="true"
                       className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: "radial-gradient(60% 60% at 50% 40%, rgba(var(--nb-accent-rgb),0.22), transparent 70%)" }}
+                      style={{ background: "radial-gradient(60% 60% at 50% 40%, rgb(var(--nb-accent-rgb) / 0.22), transparent 70%)" }}
                     />
-                    <img
-                      src={bike.image}
-                      alt={bike.name}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {bike.image ? (
+                      <img
+                        src={bike.image}
+                        alt={bike.name}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center bg-slate-100 text-slate-400 font-display font-semibold">
+                        {bike.name}
+                      </div>
+                    )}
                     <span className="absolute top-4 left-4 z-20 rounded-full glass px-3 py-1 text-xs text-slate-700">
                       {bike.category}
                     </span>

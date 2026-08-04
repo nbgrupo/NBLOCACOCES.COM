@@ -26,12 +26,18 @@ export default function SocialProof() {
                 </div>
                 <blockquote className="text-slate-600 leading-relaxed flex-1">&ldquo;{t.text}&rdquo;</blockquote>
                 <figcaption className="mt-6 flex items-center gap-3">
-                  <img
-                    src={t.photo}
-                    alt={t.name}
-                    loading="lazy"
-                    className="h-11 w-11 rounded-full object-cover border border-black/10"
-                  />
+                  {t.photo ? (
+                    <img
+                      src={t.photo}
+                      alt={t.name}
+                      loading="lazy"
+                      className="h-11 w-11 rounded-full object-cover border border-black/10"
+                    />
+                  ) : (
+                    <div className="h-11 w-11 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-semibold border border-black/10">
+                      {(t.name || "?").charAt(0)}
+                    </div>
+                  )}
                   <div>
                     <p className="text-sm font-semibold text-slate-900">{t.name}</p>
                     <p className="text-xs text-slate-400">{t.role}</p>

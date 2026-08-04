@@ -4,7 +4,7 @@
 
 :root {
     --nb-accent: #00e5ff;
-    --nb-accent-rgb: 0, 229, 255;
+    --nb-accent-rgb: 0 229 255;
     --nb-accent-ink: #006773;
     --nb-bg: #f4f5f7;
 }
@@ -104,10 +104,10 @@ code {
 
 /* ---------- Glow ---------- */
 .glow-accent {
-    box-shadow: 0 0 30px rgba(var(--nb-accent-rgb), 0.35);
+    box-shadow: 0 0 30px rgb(var(--nb-accent-rgb) / 0.35);
 }
 .text-glow {
-    text-shadow: 0 0 24px rgba(var(--nb-accent-rgb), 0.5);
+    text-shadow: 0 0 24px rgb(var(--nb-accent-rgb) / 0.5);
 }
 
 /* ---------- Noise texture ---------- */
@@ -125,12 +125,12 @@ code {
 .animated-gradient {
     background: radial-gradient(
             120% 120% at 15% 10%,
-            rgba(var(--nb-accent-rgb), 0.16) 0%,
+            rgb(var(--nb-accent-rgb) / 0.16) 0%,
             transparent 45%
         ),
         radial-gradient(
             100% 100% at 90% 20%,
-            rgba(var(--nb-accent-rgb), 0.1) 0%,
+            rgb(var(--nb-accent-rgb) / 0.1) 0%,
             transparent 50%
         ),
         #eef1f5;

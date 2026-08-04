@@ -9,7 +9,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 
-const LINKS = [
+const NAV_FALLBACK = [
   { label: "Início", id: "hero" },
   { label: "Como Funciona", id: "como-funciona" },
   { label: "Frota", id: "frota" },
@@ -19,6 +19,7 @@ const LINKS = [
 export default function Navbar() {
   const { config } = useConfig();
   const [scrolled, setScrolled] = useState(false);
+  const links = config.navbar?.links || NAV_FALLBACK;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -48,7 +49,7 @@ export default function Navbar() {
         </button>
 
         <div className="hidden md:flex items-center gap-8">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <button
               key={l.id}
               data-testid={`nav-${l.id}`}
@@ -66,7 +67,7 @@ export default function Navbar() {
           onClick={() => scrollToId("frota")}
           className="hidden md:inline-flex items-center rounded-full bg-accent-nb px-5 py-2 text-sm font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.04] glow-accent"
         >
-          Assinar
+          {config.navbar?.cta || "Assinar"}
         </button>
 
         {/* Mobile */}
@@ -89,7 +90,7 @@ export default function Navbar() {
                 </SheetClose>
               </div>
               <div className="flex flex-col gap-5">
-                {LINKS.map((l) => (
+                {links.map((l) => (
                   <SheetClose asChild key={l.id}>
                     <button
                       data-testid={`mobile-nav-${l.id}`}
@@ -106,7 +107,7 @@ export default function Navbar() {
                     onClick={() => scrollToId("frota")}
                     className="mt-4 rounded-full bg-accent-nb px-5 py-3 font-semibold text-[#0a0a0a]"
                   >
-                    Assinar agora
+                    {config.navbar?.ctaMobile || "Assinar agora"}
                   </button>
                 </SheetClose>
               </div>

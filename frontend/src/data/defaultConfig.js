@@ -10,6 +10,19 @@ const defaultConfig = {
     name: "NB Locações",
     tagline: "Assinatura de motos",
   },
+  navbar: {
+    cta: "Assinar",
+    ctaMobile: "Assinar agora",
+    links: [
+      { label: "Início", id: "hero" },
+      { label: "Como Funciona", id: "como-funciona" },
+      { label: "Frota", id: "frota" },
+      { label: "FAQ", id: "faq" },
+    ],
+  },
+  marquee: {
+    words: ["SEM ENTRADA", "100% DIGITAL", "TUDO INCLUSO", "TROCA FLEXÍVEL", "COBERTURA 24H"],
+  },
   hero: {
     badge: "Plano Conquiste",
     titleLine1: "A LOCAÇÃO QUE TE",
@@ -170,6 +183,8 @@ const defaultConfig = {
     mapEmbed:
       "https://www.google.com/maps?q=Avenida+Paulista,+Sao+Paulo&output=embed",
     mapsLink: "https://www.google.com/maps/dir/?api=1&destination=Avenida+Paulista+Sao+Paulo",
+    comoChegar: "Como chegar",
+    falarWhats: "Falar no WhatsApp",
   },
   ctaFinal: {
     title: "Pronto para pilotar sem preocupações?",
@@ -194,6 +209,15 @@ const defaultConfig = {
       instagram: "@nb_locacoes",
     },
     cnpj: "CNPJ 00.000.000/0001-00",
+    headings: {
+      links: "Links rápidos",
+      address: "Endereço",
+      contact: "Contato",
+    },
+    legal: {
+      privacy: "Política de Privacidade",
+      terms: "Termos de Uso",
+    },
   },
   whatsapp: {
     number: "5511900000000",
