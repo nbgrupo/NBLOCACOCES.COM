@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
-import { Settings, Download, RotateCcw, Save, Plus, Trash2, Upload, Loader2, Video } from "lucide-react";
+import { Settings, Download, RotateCcw, Save, Plus, Trash2, Upload, Loader2, Video, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useConfig } from "@/context/ConfigContext";
+import AdminLoginModal from "@/components/site/AdminLoginModal";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +20,7 @@ import { Button } from "@/components/ui/button";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+const TOKEN_KEY = "nb_admin_token";
 
 async function uploadToServer(file) {
   const form = new FormData();
@@ -163,7 +165,44 @@ export default function AdminPanel() {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const videoInputRef = useRef(null);
+
+  // Verify stored token on mount
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return;
+    axios
+      .get(`${API}/admin/verify`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(() => setIsAuthenticated(true))
+      .catch(() => {
+        localStorage.removeItem(TOKEN_KEY);
+        setIsAuthenticated(false);
+      });
+  }, []);
+
+  const handleGearClick = () => {
+    if (isAuthenticated) {
+      setOpen(true);
+    } else {
+      setShowLogin(true);
+    }
+  };
+
+  const handleLoginSuccess = (token) => {
+    localStorage.setItem(TOKEN_KEY, token);
+    setIsAuthenticated(true);
+    setShowLogin(false);
+    setOpen(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    setIsAuthenticated(false);
+    setOpen(false);
+    toast.success("Sessão encerrada.");
+  };
 
   // Reset draft only when the panel is opened (never mid-edit)
   useEffect(() => {
@@ -229,11 +268,20 @@ export default function AdminPanel() {
   };
 
   return (
+    <>
+      {showLogin && (
+        <AdminLoginModal
+          onSuccess={handleLoginSuccess}
+          onClose={() => setShowLogin(false)}
+        />
+      )}
+
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <button
           data-testid="admin-gear-btn"
           aria-label="Painel de configurações"
+          onClick={handleGearClick}
           className="fixed bottom-6 right-24 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full glass-dark border border-white/10 text-white/70 transition-all duration-500 hover:text-accent-nb hover:rotate-90"
         >
           <Settings className="h-5 w-5" />
@@ -259,6 +307,9 @@ export default function AdminPanel() {
             </Button>
             <Button data-testid="admin-reset-btn" onClick={handleReset} size="sm" variant="outline" className="border-white/15 text-white hover:bg-white/5">
               <RotateCcw className="h-4 w-4" />
+            </Button>
+            <Button data-testid="admin-logout-btn" onClick={handleLogout} size="sm" variant="outline" className="border-white/15 text-white hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-400" aria-label="Sair">
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </SheetHeader>
@@ -630,5 +681,6 @@ export default function AdminPanel() {
         </Tabs>
       </SheetContent>
     </Sheet>
+    </>
   );
 }

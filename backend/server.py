@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -6,11 +6,12 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import shutil
 import logging
+import jwt as pyjwt
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Any, Dict
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 ROOT_DIR = Path(__file__).parent
@@ -70,10 +71,49 @@ class LeadCreate(BaseModel):
     message: Optional[str] = None
 
 
+class AdminLoginPayload(BaseModel):
+    username: str
+    password: str
+
+
 # ---------------- Routes ----------------
 @api_router.get("/")
 async def root():
     return {"message": "NB Locações API online"}
+
+
+@api_router.post("/admin/login")
+async def admin_login(payload: AdminLoginPayload):
+    """Verify admin credentials and return a JWT token."""
+    expected_user = os.environ.get("ADMIN_USERNAME", "Admin")
+    expected_pass = os.environ.get("ADMIN_PASSWORD", "")
+    if payload.username != expected_user or payload.password != expected_pass:
+        raise HTTPException(status_code=401, detail="Usuário ou senha incorretos.")
+    secret = os.environ.get("JWT_SECRET", "fallback-secret")
+    token_data = {
+        "sub": "admin",
+        "exp": datetime.now(timezone.utc) + timedelta(hours=8),
+    }
+    token = pyjwt.encode(token_data, secret, algorithm="HS256")
+    return {"token": token}
+
+
+@api_router.get("/admin/verify")
+async def admin_verify(request: Request):
+    """Check if the provided Bearer token is still valid."""
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token não fornecido.")
+    token = auth_header[7:]
+    secret = os.environ.get("JWT_SECRET", "fallback-secret")
+    try:
+        pyjwt.decode(token, secret, algorithms=["HS256"])
+        return {"valid": True}
+    except pyjwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado.")
+    except pyjwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido.")
+
 
 
 @api_router.get("/config")
