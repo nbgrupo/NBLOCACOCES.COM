@@ -1,10 +1,10 @@
 from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Request
+from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
-import shutil
+import requests as http_requests
 import logging
 import jwt as pyjwt
 from pathlib import Path
@@ -17,10 +17,70 @@ from datetime import datetime, timezone, timedelta
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Uploads directory (served statically)
-UPLOAD_DIR = ROOT_DIR / "uploads"
-UPLOAD_DIR.mkdir(exist_ok=True)
 ALLOWED_EXT = {".mp4", ".webm", ".mov", ".ogg", ".jpg", ".jpeg", ".png", ".webp", ".gif"}
+MIME_TYPES = {
+    "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
+    "gif": "image/gif", "webp": "image/webp",
+    "mp4": "video/mp4", "webm": "video/webm", "mov": "video/quicktime",
+    "ogg": "video/ogg",
+}
+
+# ---------- Object Storage (Emergent) ----------
+_STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
+STORAGE_URL = _STORAGE_BASE.rstrip("/") + "/objstore/api/v1/storage"
+EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+APP_NAME = "nb-locacoes"
+_storage_key: Optional[str] = None
+
+def _init_storage(force: bool = False) -> str:
+    global _storage_key
+    if _storage_key and not force:
+        return _storage_key
+    resp = http_requests.post(
+        f"{STORAGE_URL}/init",
+        json={"emergent_key": EMERGENT_KEY},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    _storage_key = resp.json()["storage_key"]
+    return _storage_key
+
+def _put_object(path: str, data: bytes, content_type: str) -> dict:
+    key = _init_storage()
+    resp = http_requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key, "Content-Type": content_type},
+        data=data,
+        timeout=120,
+    )
+    if resp.status_code == 404:
+        key = _init_storage(force=True)
+        resp = http_requests.put(
+            f"{STORAGE_URL}/objects/{path}",
+            headers={"X-Storage-Key": key, "Content-Type": content_type},
+            data=data,
+            timeout=120,
+        )
+    resp.raise_for_status()
+    return resp.json()
+
+def _get_object(path: str) -> tuple:
+    key = _init_storage()
+    resp = http_requests.get(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key},
+        timeout=60,
+    )
+    if resp.status_code == 404:
+        key = _init_storage(force=True)
+        resp = http_requests.get(
+            f"{STORAGE_URL}/objects/{path}",
+            headers={"X-Storage-Key": key},
+            timeout=60,
+        )
+    resp.raise_for_status()
+    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
+
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -163,26 +223,39 @@ async def upload_file(file: UploadFile = File(...)):
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXT:
         raise HTTPException(status_code=400, detail=f"Tipo de arquivo não suportado: {ext}")
-    name = f"{uuid.uuid4().hex}{ext}"
-    dest = UPLOAD_DIR / name
+    content_type = MIME_TYPES.get(ext.lstrip("."), "application/octet-stream")
+    path = f"{APP_NAME}/uploads/{uuid.uuid4().hex}{ext}"
+    data = await file.read()
     try:
-        with dest.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-    finally:
-        file.file.close()
-    return {"url": f"/api/uploads/{name}", "filename": name}
+        result = _put_object(path, data, content_type)
+    except Exception as e:
+        logger.error(f"Object storage upload failed: {e}")
+        raise HTTPException(status_code=500, detail="Falha ao enviar o arquivo.")
+    return {"url": f"/api/files/{result['path']}", "filename": file.filename}
+
+
+@api_router.get("/files/{file_path:path}")
+async def serve_file(file_path: str):
+    """Proxy files from object storage — allows <img src> without auth headers."""
+    try:
+        data, content_type = _get_object(file_path)
+    except http_requests.HTTPError as e:
+        if e.response is not None and e.response.status_code == 404:
+            raise HTTPException(status_code=404, detail="Arquivo não encontrado.")
+        raise HTTPException(status_code=502, detail="Erro ao recuperar o arquivo.")
+    return Response(content=data, media_type=content_type)
 
 
 # Include the router in the main app
 app.include_router(api_router)
 
-# Serve uploaded files (ingress routes /api/* to this backend)
-app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+_cors_origins = os.environ.get('CORS_ORIGINS', '*')
+_cors_list = _cors_origins.split(',') if _cors_origins != '*' else ['*']
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=_cors_list,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -193,6 +266,15 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+@app.on_event("startup")
+async def startup():
+    try:
+        _init_storage()
+        logger.info("Object storage initialized successfully.")
+    except Exception as e:
+        logger.warning(f"Object storage init failed at startup (will retry on first upload): {e}")
 
 
 @app.on_event("shutdown")

@@ -37,14 +37,20 @@ WhatsApp flutuante e botão voltar ao topo.
 - SEO: meta tags, lang pt-BR, hierarquia H1/H2/H3, lazy loading de imagens.
 - Verificado: curl (todos os endpoints) + screenshots (hero, frota, simulador, localização, footer, admin com troca de cor ao vivo).
 
+## Implemented (2026-09-16 — iteração 3)
+- **Proteção do Admin Panel**: Modal de login com JWT. Usuário: `Admin`, Senha: `esenha132` (via env vars). Token 8h em localStorage. Botão de logout no painel.
+- **Upload na nuvem**: Migrado de armazenamento local para Emergent Object Storage. Arquivos persistentes entre deploys.
+- **Endpoints de auth**: `POST /api/admin/login`, `GET /api/admin/verify`.
+- **Deployment check**: ✅ PASS — sem blockers, pronto para Kubernetes.
+- **Testes**: 16/16 passaram (iteration_3.json).
+
 ## Notes
 - Imagens são placeholders editáveis (o usuário informou que adicionará as próprias via Painel Admin → Imagens).
 - Dados de contato/endereço/CNPJ são placeholders editáveis via Painel Admin → Contato.
 
 ## Backlog / Next
 - P1: Drag-and-drop para upload de arquivos no Admin Panel.
-- P2: Armazenamento em nuvem para uploads de mídia (atualmente salvo no disco do container — volátil).
-- P2: Autenticação opcional para proteger o Painel Admin.
+- P1: Deploy do backend em serviço permanente + configurar `REACT_APP_BACKEND_URL` na Vercel.
 - P2: Dashboard/página interna de listagem de leads.
 - P2: Categorias "Custom"/"Premium" sem motos — adicionar modelos.
-- Refactor: `AdminPanel.jsx` está com 635 linhas — considerar divisão em sub-componentes.
+- Refactor: `AdminPanel.jsx` está com ~690 linhas — considerar divisão em sub-componentes.

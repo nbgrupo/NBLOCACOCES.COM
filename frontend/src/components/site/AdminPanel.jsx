@@ -10,7 +10,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -269,6 +268,16 @@ export default function AdminPanel() {
 
   return (
     <>
+      {/* Gear button — standalone, controls auth flow */}
+      <button
+        data-testid="admin-gear-btn"
+        aria-label="Painel de configurações"
+        onClick={handleGearClick}
+        className="fixed bottom-6 right-24 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full glass-dark border border-white/10 text-white/70 transition-all duration-500 hover:text-accent-nb hover:rotate-90"
+      >
+        <Settings className="h-5 w-5" />
+      </button>
+
       {showLogin && (
         <AdminLoginModal
           onSuccess={handleLoginSuccess}
@@ -277,16 +286,6 @@ export default function AdminPanel() {
       )}
 
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <button
-          data-testid="admin-gear-btn"
-          aria-label="Painel de configurações"
-          onClick={handleGearClick}
-          className="fixed bottom-6 right-24 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full glass-dark border border-white/10 text-white/70 transition-all duration-500 hover:text-accent-nb hover:rotate-90"
-        >
-          <Settings className="h-5 w-5" />
-        </button>
-      </SheetTrigger>
       <SheetContent
         side="right"
         className="w-full sm:max-w-md glass-dark border-white/10 text-white overflow-y-auto p-0"
