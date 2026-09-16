@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { scrollToId } from "@/components/site/shared";
+import EditableField from "@/components/site/EditableField";
 
 export default function FinalCTA() {
   const { config } = useConfig();
@@ -22,7 +23,7 @@ export default function FinalCTA() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="font-display font-black tracking-tighter text-4xl sm:text-6xl lg:text-7xl text-slate-900 leading-[0.95]"
         >
-          {data.title}
+          <EditableField path="ctaFinal.title">{data.title}</EditableField>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0 }}
@@ -31,7 +32,7 @@ export default function FinalCTA() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mt-6 text-lg text-slate-500"
         >
-          {data.subtitle}
+          <EditableField path="ctaFinal.subtitle" type="textarea">{data.subtitle}</EditableField>
         </motion.p>
         <motion.button
           initial={{ opacity: 0, y: 20 }}
@@ -42,7 +43,7 @@ export default function FinalCTA() {
           onClick={() => scrollToId("frota")}
           className="group mt-10 inline-flex items-center justify-center gap-3 rounded-full bg-accent-nb px-9 py-4 text-base font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.05] glow-accent"
         >
-          {data.button}
+          <EditableField path="ctaFinal.button">{data.button}</EditableField>
           <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
         </motion.button>
       </div>

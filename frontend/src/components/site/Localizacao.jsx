@@ -2,6 +2,7 @@ import React from "react";
 import { MapPin, Clock, Phone, MessageCircle, Navigation } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { SectionHeading, Reveal } from "@/components/site/shared";
+import EditableField from "@/components/site/EditableField";
 
 export default function Localizacao() {
   const { config } = useConfig();
@@ -16,7 +17,7 @@ export default function Localizacao() {
   return (
     <section id="localizacao" data-testid="localizacao-section" className="relative bg-[#F4F5F7] py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <SectionHeading eyebrow="Localização" title={data.title} subtitle={data.subtitle} />
+        <SectionHeading eyebrow="Localização" title={<EditableField path="localizacao.title">{data.title}</EditableField>} subtitle={<EditableField path="localizacao.subtitle" type="textarea">{data.subtitle}</EditableField>} />
 
         <div className="mt-12 grid lg:grid-cols-3 gap-5">
           <Reveal className="lg:col-span-2">
@@ -41,22 +42,22 @@ export default function Localizacao() {
                   <MapPin className="h-5 w-5 text-accent-ink shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-widest text-slate-400">Endereço</p>
-                    <p className="text-sm text-slate-700 mt-1">{data.address}</p>
+                    <p className="text-sm text-slate-700 mt-1"><EditableField path="localizacao.address">{data.address}</EditableField></p>
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <Clock className="h-5 w-5 text-accent-ink shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-widest text-slate-400">Horário</p>
-                    <p className="text-sm text-slate-700 mt-1">{data.hours}</p>
+                    <p className="text-sm text-slate-700 mt-1"><EditableField path="localizacao.hours">{data.hours}</EditableField></p>
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <Phone className="h-5 w-5 text-accent-ink shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-widest text-slate-400">Telefone</p>
-                    <p className="text-sm text-slate-700 mt-1">{data.phone}</p>
-                    <p className="text-sm text-slate-700">WhatsApp: {data.whatsapp}</p>
+                    <p className="text-sm text-slate-700 mt-1"><EditableField path="localizacao.phone">{data.phone}</EditableField></p>
+                    <p className="text-sm text-slate-700">WhatsApp: <EditableField path="localizacao.whatsapp">{data.whatsapp}</EditableField></p>
                   </div>
                 </div>
               </div>

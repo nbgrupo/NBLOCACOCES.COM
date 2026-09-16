@@ -3,6 +3,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { SectionHeading } from "@/components/site/shared";
+import EditableField from "@/components/site/EditableField";
 
 export default function Frota() {
   const { config } = useConfig();
@@ -41,7 +42,7 @@ export default function Frota() {
     <section id="frota" data-testid="frota-section" className="relative bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-          <SectionHeading eyebrow="Frota" title={data.title} subtitle={data.subtitle} />
+          <SectionHeading eyebrow="Frota" title={<EditableField path="frota.title">{data.title}</EditableField>} subtitle={<EditableField path="frota.subtitle" type="textarea">{data.subtitle}</EditableField>} />
 
           <div className="flex flex-wrap gap-2">
             {data.categories.map((cat) => (
@@ -64,7 +65,9 @@ export default function Frota() {
         <div className="mt-12">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-5 touch-pan-y">
-              {bikes.map((bike) => (
+              {bikes.map((bike) => {
+                const bikeIdx = data.bikes.findIndex((b) => b.id === bike.id);
+                return (
                 <article
                   key={bike.id}
                   data-testid={`bike-card-${bike.id}`}
@@ -76,6 +79,7 @@ export default function Frota() {
                       className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                       style={{ background: "radial-gradient(60% 60% at 50% 40%, rgb(var(--nb-accent-rgb) / 0.22), transparent 70%)" }}
                     />
+                    <EditableField path={`frota.bikes.${bikeIdx}.image`} type="image" as="div" className="h-full w-full">
                     {bike.image ? (
                       <img
                         src={bike.image}
@@ -88,18 +92,23 @@ export default function Frota() {
                         {bike.name}
                       </div>
                     )}
+                    </EditableField>
                     <span className="absolute top-4 left-4 z-20 rounded-full glass px-3 py-1 text-xs text-slate-700">
-                      {bike.category}
+                      <EditableField path={`frota.bikes.${bikeIdx}.category`}>{bike.category}</EditableField>
                     </span>
                   </div>
                   <div className="p-6">
-                    <h3 className="font-display font-semibold text-xl text-slate-900">{bike.name}</h3>
-                    <p className="text-sm text-slate-400 mt-1">{bike.specs}</p>
+                    <h3 className="font-display font-semibold text-xl text-slate-900">
+                      <EditableField path={`frota.bikes.${bikeIdx}.name`}>{bike.name}</EditableField>
+                    </h3>
+                    <p className="text-sm text-slate-400 mt-1">
+                      <EditableField path={`frota.bikes.${bikeIdx}.specs`}>{bike.specs}</EditableField>
+                    </p>
                     <div className="mt-5 flex items-end justify-between">
                       <div>
                         <p className="text-xs text-slate-400 uppercase tracking-widest">{config.global?.priceFromLabel || "a partir de"}</p>
                         <p className="font-display font-bold text-2xl text-slate-900">
-                          R$ {bike.price}
+                          R$ <EditableField path={`frota.bikes.${bikeIdx}.price`} type="number" as="span">{bike.price}</EditableField>
                           <span className="text-sm font-normal text-slate-500">/{config.global?.pricePeriod || "mês"}</span>
                         </p>
                       </div>
@@ -114,7 +123,8 @@ export default function Frota() {
                     </div>
                   </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
           </div>
 

@@ -224,6 +224,23 @@ html.lenis body {
     -webkit-text-stroke: 1.5px var(--nb-accent-ink);
 }
 
+/* ---- Visual Edit Mode ---- */
+body[data-nb-edit] .nb-editable {
+    outline: 1.5px dashed transparent;
+    outline-offset: 2px;
+    border-radius: 3px;
+    cursor: cell !important;
+    transition: outline-color 0.12s, background-color 0.12s;
+}
+body[data-nb-edit] .nb-editable:hover {
+    outline-color: var(--nb-accent);
+    background-color: rgb(var(--nb-accent-rgb) / 0.07);
+}
+body[data-nb-edit] [data-nb-type="image"].nb-editable {
+    cursor: copy !important;
+    position: relative;
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;

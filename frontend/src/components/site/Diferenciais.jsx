@@ -1,16 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Wallet,
-  ShieldCheck,
-  Wrench,
-  Repeat,
-  Smartphone,
-  Clock,
-  Sparkles,
-} from "lucide-react";
+import { Wallet, ShieldCheck, Wrench, Repeat, Smartphone, Clock, Sparkles } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { SectionHeading } from "@/components/site/shared";
+import EditableField from "@/components/site/EditableField";
 
 const ICONS = {
   wallet: Wallet,
@@ -42,7 +35,7 @@ export default function Diferenciais() {
       className="relative bg-[#F4F5F7] py-24 sm:py-32"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <SectionHeading eyebrow="Diferenciais" title={data.title} subtitle={data.subtitle} />
+        <SectionHeading eyebrow="Diferenciais" title={<EditableField path="diferenciais.title">{data.title}</EditableField>} subtitle={<EditableField path="diferenciais.subtitle" type="textarea">{data.subtitle}</EditableField>} />
 
         <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[200px]">
           {data.items.map((item, i) => {
@@ -66,8 +59,12 @@ export default function Diferenciais() {
                   <Icon className="h-6 w-6" />
                 </div>
                 <div className="relative z-10">
-                  <h3 className="font-display font-semibold text-xl text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                  <h3 className="font-display font-semibold text-xl text-slate-900">
+                    <EditableField path={`diferenciais.items.${i}.title`}>{item.title}</EditableField>
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+                    <EditableField path={`diferenciais.items.${i}.desc`} type="textarea">{item.desc}</EditableField>
+                  </p>
                 </div>
               </motion.div>
             );

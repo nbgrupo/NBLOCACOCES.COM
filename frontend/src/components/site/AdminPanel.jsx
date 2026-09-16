@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
-import { Settings, Download, RotateCcw, Save, Plus, Trash2, Upload, Loader2, Video, LogOut } from "lucide-react";
+import { Settings, Download, RotateCcw, Save, Plus, Trash2, Upload, Loader2, Video, LogOut, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useConfig } from "@/context/ConfigContext";
+import { useEditMode } from "@/context/EditModeContext";
+import { uploadToServer } from "@/lib/upload";
 import AdminLoginModal from "@/components/site/AdminLoginModal";
 import {
   Sheet,
@@ -20,15 +22,6 @@ import { Button } from "@/components/ui/button";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 const TOKEN_KEY = "nb_admin_token";
-
-async function uploadToServer(file) {
-  const form = new FormData();
-  form.append("file", file);
-  const res = await axios.post(`${API}/upload`, form, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return `${BACKEND_URL}${res.data.url}`;
-}
 
 function Field({ label, value, onChange, type = "text", testid }) {
   return (
@@ -210,6 +203,7 @@ function ItemCard({ children, onRemove, removeTestid }) {
 
 export default function AdminPanel() {
   const { config, setConfig, saveToServer, resetConfig } = useConfig();
+  const { setIsEditMode, isEditMode } = useEditMode();
   const [draft, setDraft] = useState(config);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -329,6 +323,17 @@ export default function AdminPanel() {
             Edite todos os textos, cores, imagens e informações de contato do site.
           </SheetDescription>
           <div className="flex gap-2 pt-2">
+            <Button
+              data-testid="admin-visual-mode-btn"
+              onClick={() => { setOpen(false); setIsEditMode(true); }}
+              size="sm"
+              variant="outline"
+              className="flex-1 border-accent-nb/40 text-accent-nb hover:bg-accent-nb/10 gap-1.5"
+            >
+              <Pencil className="h-3.5 w-3.5" /> Editar na página
+            </Button>
+          </div>
+          <div className="flex gap-2 pt-1">
             <Button data-testid="admin-save-btn" onClick={handleSave} disabled={saving} size="sm" className="flex-1 bg-accent-nb text-[#0a0a0a] hover:bg-accent-nb/90">
               <Save className="h-4 w-4 mr-1" /> Salvar
             </Button>

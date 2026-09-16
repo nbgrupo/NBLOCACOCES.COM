@@ -3,6 +3,7 @@ import "@/App.css";
 import Lenis from "lenis";
 import { Toaster } from "@/components/ui/sonner";
 import { ConfigProvider } from "@/context/ConfigContext";
+import { EditModeProvider } from "@/context/EditModeContext";
 import Navbar from "@/components/site/Navbar";
 import Hero from "@/components/site/Hero";
 import ComoFunciona from "@/components/site/ComoFunciona";
@@ -16,6 +17,7 @@ import FinalCTA from "@/components/site/FinalCTA";
 import Footer from "@/components/site/Footer";
 import FloatingButtons from "@/components/site/FloatingButtons";
 import AdminPanel from "@/components/site/AdminPanel";
+import EditModeBar from "@/components/site/EditModeBar";
 
 function App() {
   useEffect(() => {
@@ -44,24 +46,27 @@ function App() {
 
   return (
     <ConfigProvider>
-      <div className="App bg-[#F4F5F7] text-slate-900 antialiased min-h-screen">
-        <Navbar />
-        <main>
-          <Hero />
-          <ComoFunciona />
-          <Diferenciais />
-          <Frota />
-          <EditorialMarquee />
-          <SocialProof />
-          <FAQ />
-          <Localizacao />
-          <FinalCTA />
-        </main>
-        <Footer />
-        <FloatingButtons />
-        <AdminPanel />
-        <Toaster position="bottom-center" theme="light" richColors />
-      </div>
+      <EditModeProvider>
+        <div className="App bg-[#F4F5F7] text-slate-900 antialiased min-h-screen">
+          <Navbar />
+          <main>
+            <Hero />
+            <ComoFunciona />
+            <Diferenciais />
+            <Frota />
+            <EditorialMarquee />
+            <SocialProof />
+            <FAQ />
+            <Localizacao />
+            <FinalCTA />
+          </main>
+          <Footer />
+          <FloatingButtons />
+          <AdminPanel />
+          <EditModeBar />
+          <Toaster position="bottom-center" theme="light" richColors />
+        </div>
+      </EditModeProvider>
     </ConfigProvider>
   );
 }

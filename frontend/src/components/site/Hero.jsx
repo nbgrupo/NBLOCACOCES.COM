@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Zap, Volume2, VolumeX } from "lucide-react";
 import { useConfig } from "@/context/ConfigContext";
 import { MaskedLine, AnimatedCounter, scrollToId } from "@/components/site/shared";
+import EditableField from "@/components/site/EditableField";
 
 export default function Hero() {
   const { config } = useConfig();
@@ -66,14 +67,14 @@ export default function Hero() {
               className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-accent-ink mb-8"
             >
               <Zap className="h-3.5 w-3.5" />
-              {hero.badge}
+              <EditableField path="hero.badge">{hero.badge}</EditableField>
             </motion.div>
 
             <h1 className="font-display font-black tracking-tighter leading-[0.95] text-4xl sm:text-6xl lg:text-7xl text-slate-900">
-              <MaskedLine delay={0.15}>{hero.titleLine1}</MaskedLine>
-              <MaskedLine delay={0.32} className="text-accent-ink text-glow">
-                {hero.titleLine2}
-              </MaskedLine>
+              <EditableField path="hero.titleLine1" as="span"><MaskedLine delay={0.15}>{hero.titleLine1}</MaskedLine></EditableField>
+              <EditableField path="hero.titleLine2" as="span" className="text-accent-ink text-glow block">
+                <MaskedLine delay={0.32} className="text-accent-ink text-glow">{hero.titleLine2}</MaskedLine>
+              </EditableField>
             </h1>
 
             <motion.p
@@ -82,7 +83,7 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.55 }}
               className="mt-6 max-w-md text-base sm:text-lg text-slate-500 leading-relaxed"
             >
-              {hero.subtitle}
+              <EditableField path="hero.subtitle" type="textarea">{hero.subtitle}</EditableField>
             </motion.p>
 
             <motion.div
@@ -96,7 +97,7 @@ export default function Hero() {
                 onClick={() => scrollToId("frota")}
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-accent-nb px-7 py-3.5 text-sm font-semibold text-[#0a0a0a] transition-transform duration-300 hover:scale-[1.04] glow-accent"
               >
-                {hero.ctaPrimary}
+                <EditableField path="hero.ctaPrimary">{hero.ctaPrimary}</EditableField>
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
               <button
@@ -104,7 +105,7 @@ export default function Hero() {
                 onClick={() => scrollToId("frota")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:border-accent-nb hover:text-accent-ink"
               >
-                {hero.ctaSecondary}
+                <EditableField path="hero.ctaSecondary">{hero.ctaSecondary}</EditableField>
               </button>
             </motion.div>
 
@@ -120,7 +121,7 @@ export default function Hero() {
                 className="font-display font-bold text-3xl sm:text-4xl text-slate-900"
               />
               <span className="text-sm text-slate-500 max-w-[180px] leading-snug">
-                {counter.label}
+                <EditableField path="counter.label">{counter.label}</EditableField>
               </span>
             </motion.div>
           </div>
@@ -145,6 +146,7 @@ export default function Hero() {
               className="relative"
             >
               <div className="relative overflow-hidden rounded-[2rem] border border-black/10">
+                <EditableField path="hero.image" type="image" as="div">
                 {hero.image ? (
                   <img
                     src={hero.image}
@@ -155,7 +157,8 @@ export default function Hero() {
                 ) : (
                   <div className="w-full h-[380px] sm:h-[520px] bg-slate-100" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+                </EditableField>
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-5 left-5 glass rounded-2xl px-5 py-3">
                   <p className="text-xs text-slate-500 uppercase tracking-widest">{config.global?.priceFromLabel || "a partir de"}</p>
                   <p className="font-display font-bold text-2xl text-slate-900">
