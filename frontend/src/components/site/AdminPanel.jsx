@@ -59,63 +59,113 @@ function Area({ label, value, onChange, testid }) {
   );
 }
 
-function ImageField({ label, value, onChange, testid }) {
+function DropZone({ accept, maxMB, onFile, busy, children }) {
+  const [dragging, setDragging] = useState(false);
   const inputRef = useRef(null);
-  const [busy, setBusy] = useState(false);
 
-  const handleFile = async (e) => {
-    const file = e.target.files?.[0];
+  const processFile = (file) => {
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Imagem muito grande (máx. 10MB).");
+    if (file.size > maxMB * 1024 * 1024) {
+      toast.error(`Arquivo muito grande (máx. ${maxMB}MB).`);
       return;
     }
+    onFile(file);
+  };
+
+  const onDragOver = (e) => { e.preventDefault(); setDragging(true); };
+  const onDragLeave = () => setDragging(false);
+  const onDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    processFile(file);
+  };
+  const onInputChange = (e) => processFile(e.target.files?.[0]);
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label="Zona de upload — arraste ou clique"
+      data-dragging={dragging}
+      onClick={() => !busy && inputRef.current?.click()}
+      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDragEnter={onDragOver}
+      onDrop={onDrop}
+      className={`relative cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 select-none
+        ${dragging ? "border-accent-nb bg-accent-nb/10 scale-[1.02]" : "border-white/15 hover:border-accent-nb/50 hover:bg-white/5"}
+        ${busy ? "pointer-events-none opacity-60" : ""}`}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        onChange={onInputChange}
+        className="hidden"
+      />
+      {children({ dragging, busy, inputRef })}
+    </div>
+  );
+}
+
+function ImageField({ label, value, onChange, testid }) {
+  const [busy, setBusy] = useState(false);
+
+  const handleFile = async (file) => {
     setBusy(true);
     try {
       const url = await uploadToServer(file);
       onChange(url);
       toast.success("Imagem enviada! Clique em Salvar para publicar.");
-    } catch (err) {
+    } catch {
       toast.error("Falha ao enviar a imagem.");
     } finally {
       setBusy(false);
-      if (inputRef.current) inputRef.current.value = "";
     }
   };
 
   return (
     <div className="space-y-1.5">
       <Label className="text-xs text-white/60">{label}</Label>
-      <div className="flex gap-2 items-center">
-        {value ? (
-          <img src={value} alt="preview" className="h-12 w-12 rounded-lg object-cover border border-white/10 shrink-0" />
-        ) : null}
-        <Input
-          data-testid={testid}
-          value={value ?? ""}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Cole uma URL ou envie um arquivo"
-          className="bg-[#0e0e0f] border-white/10 text-white text-sm flex-1 min-w-0"
-        />
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          onChange={handleFile}
-          className="hidden"
-          data-testid={testid ? `${testid}-file` : undefined}
-        />
-        <button
-          type="button"
-          onClick={() => inputRef.current && inputRef.current.click()}
-          disabled={busy}
-          aria-label="Enviar imagem do dispositivo"
-          data-testid={testid ? `${testid}-upload` : undefined}
-          className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 text-white/70 transition-colors hover:border-accent-nb hover:text-accent-nb disabled:opacity-60"
-        >
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-        </button>
-      </div>
+      <DropZone
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        maxMB={10}
+        onFile={handleFile}
+        busy={busy}
+      >
+        {({ dragging, busy: b }) => (
+          <div className="flex flex-col items-center gap-2 py-2" data-testid={testid}>
+            {value ? (
+              <img
+                src={value}
+                alt="preview"
+                className="h-16 w-full object-contain rounded-lg mb-1"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center">
+                <Upload className="h-5 w-5 text-accent-nb" />
+              </div>
+            )}
+            {b ? (
+              <span className="text-xs text-white/50 flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" /> Enviando…
+              </span>
+            ) : (
+              <span className="text-xs text-white/40">
+                {dragging ? "Solte para enviar" : value ? "Arraste ou clique para trocar" : "Arraste ou clique para enviar"}
+              </span>
+            )}
+          </div>
+        )}
+      </DropZone>
+      <Input
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Ou cole uma URL"
+        className="bg-[#0e0e0f] border-white/10 text-white text-xs"
+      />
     </div>
   );
 }
@@ -166,7 +216,7 @@ export default function AdminPanel() {
   const [uploading, setUploading] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const videoInputRef = useRef(null);
+  const videoInputRef = useRef(null); // kept for backward-compat ref safety
 
   // Verify stored token on mount
   useEffect(() => {
@@ -215,26 +265,7 @@ export default function AdminPanel() {
       return d;
     });
 
-  const handleVideoUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const maxMB = 60;
-    if (file.size > maxMB * 1024 * 1024) {
-      toast.error(`Vídeo muito grande (máx. ${maxMB}MB).`);
-      return;
-    }
-    setUploading(true);
-    try {
-      const fullUrl = await uploadToServer(file);
-      edit((d) => (d.hero.videoUrl = fullUrl));
-      toast.success("Vídeo enviado! Clique em Salvar para publicar.");
-    } catch (err) {
-      toast.error("Falha ao enviar o vídeo.");
-    } finally {
-      setUploading(false);
-      if (videoInputRef.current) videoInputRef.current.value = "";
-    }
-  };
+  // handleVideoUpload removed — video upload now uses DropZone component inline
 
   const handleSave = async () => {
     setSaving(true);
@@ -568,30 +599,34 @@ export default function AdminPanel() {
 
             <div className="space-y-3 rounded-lg border border-accent-nb/30 p-3">
               <p className="text-xs uppercase tracking-widest text-accent-nb">Vídeo de fundo do Hero</p>
-              <input
-                ref={videoInputRef}
-                type="file"
+              <DropZone
                 accept="video/mp4,video/webm,video/ogg,video/quicktime"
-                onChange={handleVideoUpload}
-                className="hidden"
-                data-testid="hero-video-file-input"
-              />
-              <button
-                data-testid="hero-video-upload-btn"
-                onClick={() => videoInputRef.current && videoInputRef.current.click()}
-                disabled={uploading}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-white/25 bg-[#0e0e0f] px-4 py-4 text-sm text-white/70 transition-colors hover:border-accent-nb hover:text-accent-nb disabled:opacity-60"
+                maxMB={60}
+                onFile={async (file) => {
+                  setUploading(true);
+                  try {
+                    const fullUrl = await uploadToServer(file);
+                    edit((d) => (d.hero.videoUrl = fullUrl));
+                    toast.success("Vídeo enviado! Clique em Salvar para publicar.");
+                  } catch {
+                    toast.error("Falha ao enviar o vídeo.");
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+                busy={uploading}
               >
-                {uploading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Enviando vídeo...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-4 w-4" /> Enviar vídeo do dispositivo
-                  </>
+                {({ dragging, busy: b }) => (
+                  <div className="flex flex-col items-center gap-2 py-3" data-testid="hero-video-upload-btn">
+                    <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center">
+                      {b ? <Loader2 className="h-5 w-5 animate-spin text-accent-nb" /> : <Video className="h-5 w-5 text-accent-nb" />}
+                    </div>
+                    <span className="text-xs text-white/40">
+                      {b ? "Enviando vídeo…" : dragging ? "Solte para enviar" : "Arraste um vídeo ou clique para enviar (máx. 60MB)"}
+                    </span>
+                  </div>
                 )}
-              </button>
+              </DropZone>
               {draft.hero.videoUrl ? (
                 <div className="relative overflow-hidden rounded-lg border border-white/10">
                   <video src={draft.hero.videoUrl} className="w-full h-28 object-cover" muted loop autoPlay playsInline />
