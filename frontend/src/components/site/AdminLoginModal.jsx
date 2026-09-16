@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL = "https://nblocacoes-com.onrender.com";
 const API = `${BACKEND_URL}/api`;
 
 export default function AdminLoginModal({ onSuccess, onClose }) {
