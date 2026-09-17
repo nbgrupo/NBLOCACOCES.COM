@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import axios from "axios";
 import defaultConfig from "@/data/defaultConfig";
 
-const BACKEND_URL = "https://nblocacoes-com.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
 const API = `${BACKEND_URL}/api`;
 const STORAGE_KEY = "nb_locacoes_config";
 

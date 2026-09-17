@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "https://nblocacoes-com.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
 const API = `${BACKEND_URL}/api`;
 
 export async function uploadToServer(file) {

@@ -48,9 +48,12 @@ WhatsApp flutuante e botão voltar ao topo.
 - Imagens são placeholders editáveis (o usuário informou que adicionará as próprias via Painel Admin → Imagens).
 - Dados de contato/endereço/CNPJ são placeholders editáveis via Painel Admin → Contato.
 
+## Implemented (2026-09-17 — correção de URL)
+- **Fix de URL hardcoded**: Removidas as URLs `https://nblocacoes-com.onrender.com` hardcoded de 4 arquivos frontend (`ConfigContext.jsx`, `AdminPanel.jsx`, `AdminLoginModal.jsx`, `upload.js`). Substituídas por `process.env.REACT_APP_BACKEND_URL || ""` — preview e produção funcionam sem conflito.
+
 ## Backlog / Next
-- P1: Drag-and-drop para upload de arquivos no Admin Panel.
-- P1: Deploy do backend em serviço permanente + configurar `REACT_APP_BACKEND_URL` na Vercel.
+- P1: Centralizar URL do backend em módulo `api.js` único com instância Axios configurada.
+- P1: Guia de deploy — como configurar `REACT_APP_BACKEND_URL` no Render/Vercel sem hardcodar.
 - P2: Dashboard/página interna de listagem de leads.
 - P2: Categorias "Custom"/"Premium" sem motos — adicionar modelos.
 - Refactor: `AdminPanel.jsx` está com ~690 linhas — considerar divisão em sub-componentes.
