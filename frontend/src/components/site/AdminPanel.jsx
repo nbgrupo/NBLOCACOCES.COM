@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-const BACKEND_URL = "https://nblocacoes-com.onrender.com";
+const BACKEND_URL = "https://nblocacoes-com-2.onrender.com";
 const API = `${BACKEND_URL}/api`;
 const TOKEN_KEY = "nb_admin_token";
 
@@ -322,6 +322,7 @@ export default function AdminPanel() {
           <SheetDescription className="sr-only">
             Edite todos os textos, cores, imagens e informações de contato do site.
           </SheetDescription>
+
           <div className="flex gap-2 pt-2">
             <Button
               data-testid="admin-visual-mode-btn"
@@ -333,6 +334,7 @@ export default function AdminPanel() {
               <Pencil className="h-3.5 w-3.5" /> Editar na página
             </Button>
           </div>
+
           <div className="flex gap-2 pt-1">
             <Button data-testid="admin-save-btn" onClick={handleSave} disabled={saving} size="sm" className="flex-1 bg-accent-nb text-[#0a0a0a] hover:bg-accent-nb/90">
               <Save className="h-4 w-4 mr-1" /> Salvar
@@ -560,6 +562,7 @@ export default function AdminPanel() {
                 className="h-10 w-16 rounded cursor-pointer bg-transparent"
               />
             </div>
+
             <div className="flex items-center justify-between rounded-lg border border-white/10 p-4">
               <div>
                 <p className="text-sm text-white">Cor de fundo</p>
@@ -573,6 +576,7 @@ export default function AdminPanel() {
                 className="h-10 w-16 rounded cursor-pointer bg-transparent"
               />
             </div>
+
             <div className="flex flex-wrap gap-2">
               {["#00E5FF", "#2563EB", "#16A34A", "#EA580C", "#DB2777", "#7C3AED"].map((c) => (
                 <button
@@ -584,6 +588,7 @@ export default function AdminPanel() {
                 />
               ))}
             </div>
+
             <div className="flex flex-wrap gap-2">
               {["#F4F5F7", "#FFFFFF", "#EEF2FF", "#F1F5F9", "#FFF7ED", "#0E1116"].map((c) => (
                 <button
@@ -595,6 +600,7 @@ export default function AdminPanel() {
                 />
               ))}
             </div>
+
             <p className="text-xs text-white/40">Clique em &quot;Salvar&quot; para publicar as cores.</p>
           </TabsContent>
 
@@ -632,6 +638,7 @@ export default function AdminPanel() {
                   </div>
                 )}
               </DropZone>
+
               {draft.hero.videoUrl ? (
                 <div className="relative overflow-hidden rounded-lg border border-white/10">
                   <video src={draft.hero.videoUrl} className="w-full h-28 object-cover" muted loop autoPlay playsInline />
@@ -649,6 +656,7 @@ export default function AdminPanel() {
                   <Video className="h-4 w-4" /> Nenhum vídeo. Usando fundo padrão.
                 </div>
               )}
+
               <Field label="Ou cole uma URL de vídeo (MP4/WebM)" testid="edit-hero-video" value={draft.hero.videoUrl} onChange={(v) => edit((d) => (d.hero.videoUrl = v))} />
               <ImageField label="Imagem de capa (poster)" testid="edit-hero-video-poster" value={draft.hero.videoPoster} onChange={(v) => edit((d) => (d.hero.videoPoster = v))} />
             </div>
@@ -673,6 +681,7 @@ export default function AdminPanel() {
               <Field label="Horário" value={draft.localizacao.hours} onChange={(v) => edit((d) => (d.localizacao.hours = v))} />
               <Field label="Telefone" value={draft.localizacao.phone} onChange={(v) => edit((d) => (d.localizacao.phone = v))} />
               <Field label="WhatsApp" value={draft.localizacao.whatsapp} onChange={(v) => edit((d) => (d.localizacao.whatsapp = v))} />
+
               <div className="rounded-lg border border-accent-nb/30 p-3 space-y-3">
                 <p className="text-xs uppercase tracking-widest text-accent-nb">Mapa (CEP ou endereço completo)</p>
                 <Field
@@ -689,6 +698,7 @@ export default function AdminPanel() {
                 <p className="text-xs text-white/40">Preencha o campo acima e o mapa será atualizado automaticamente. Ou edite a URL diretamente:</p>
                 <Area label="URL embed do mapa (avançado)" value={draft.localizacao.mapEmbed} onChange={(v) => edit((d) => (d.localizacao.mapEmbed = v))} />
               </div>
+
               <Field label='Texto do botão "Como chegar"' value={draft.localizacao.comoChegar} onChange={(v) => edit((d) => (d.localizacao.comoChegar = v))} />
               <Field label='Texto do botão "WhatsApp"' value={draft.localizacao.falarWhats} onChange={(v) => edit((d) => (d.localizacao.falarWhats = v))} />
             </Group>
