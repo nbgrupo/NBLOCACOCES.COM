@@ -1,0 +1,54 @@
+{
+  "summary": "Iteration 8 — Full CORS fix verification: 14/14 tests PASSED. All 3 required origins hardcoded in CORS_ALLOWED_ORIGINS, middleware registered before include_router, OPTIONS preflight returns correct Access-Control-Allow-Origin for all allowed origins, POST /api/admin/login returns JWT + ACAO header, disallowed origins correctly rejected, GET /api/config returns CORS headers.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "cors_fix_verification": {
+    "hardcoded_origins": {
+      "www_nblocacoes_com": "PASS",
+      "nblocacoes_com": "PASS",
+      "nblocacoes_site_onrender_com": "PASS"
+    },
+    "no_CORS_ORIGINS_env_var": "PASS — no os.environ.get('CORS_ORIGINS') anywhere in server.py",
+    "middleware_before_router": "PASS — app.add_middleware(CORSMiddleware) at char ~2660, app.include_router at char ~8290",
+    "allow_origins_uses_hardcoded_list": "PASS — allow_origins=CORS_ALLOWED_ORIGINS",
+    "preflight_www_nblocacoes_com": "PASS — OPTIONS 200, Access-Control-Allow-Origin: https://www.nblocacoes.com",
+    "preflight_nblocacoes_com": "PASS — OPTIONS 200, Access-Control-Allow-Origin: https://nblocacoes.com",
+    "preflight_nblocacoes_site_onrender": "PASS — OPTIONS 200, Access-Control-Allow-Origin: https://nblocacoes-site.onrender.com",
+    "preflight_disallowed_origin_rejected": "PASS — evil-attacker.com does NOT get ACAO header",
+    "preflight_get_config": "PASS — OPTIONS /api/config 200, correct ACAO header",
+    "post_admin_login_token_plus_cors": "PASS — 200, token returned, ACAO: https://www.nblocacoes.com",
+    "admin_login_allow_credentials_true": "PASS — Access-Control-Allow-Credentials: true",
+    "admin_login_wrong_creds_401": "PASS",
+    "get_config_cors_header": "PASS — GET /api/config 200, ACAO: https://www.nblocacoes.com",
+    "get_config_response_structure": "PASS — returns JSON with 'key' field"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_cors_iteration8.py",
+    "/app/test_reports/pytest/pytest_iteration8.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "CORS fix is complete and correct — all 3 required origins hardcoded, middleware before router, no env var dependency",
+    "allow_credentials=True is set which is required for cookie-based auth flows if needed in future",
+    "Disallowed origins are correctly rejected (security check passed)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_cors_iteration8.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)"
+  },
+  "test_credentials": "Admin / esenha132",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 8 complete. CORS fix fully verified: hardcoded origins, middleware order, preflight for all 3 origins, admin login with CORS headers, GET /api/config with CORS headers. All 14 tests green. No issues remaining.",
+  "rca_of_issue": "Root cause (fixed in iteration 8): (a) CORS origins depended on env var CORS_ORIGINS that Render did not inject, so allowed_origins was empty/broken; (b) CORSMiddleware was added after include_router which prevented it from intercepting preflight requests. Fix: origins hardcoded as CORS_ALLOWED_ORIGINS list + middleware moved before app.include_router(api_router). Both fixes confirmed working via 14 pytest tests."
+}

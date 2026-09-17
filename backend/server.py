@@ -90,6 +90,23 @@ db = client[os.environ['DB_NAME']]
 # Create the main app without a prefix
 app = FastAPI(title="NB Locações API")
 
+# ── CORS deve ser registrado ANTES das rotas ──────────────────────────────
+# Origens fixas no código — sem depender de variável de ambiente
+CORS_ALLOWED_ORIGINS = [
+    "https://www.nblocacoes.com",
+    "https://nblocacoes.com",
+    "https://nblocacoes-site.onrender.com",
+    "https://carousel-frota-demo.preview.emergentagent.com",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# ─────────────────────────────────────────────────────────────────────────
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
@@ -248,17 +265,6 @@ async def serve_file(file_path: str):
 
 # Include the router in the main app
 app.include_router(api_router)
-
-_cors_origins = os.environ.get('CORS_ORIGINS', '*')
-_cors_list = _cors_origins.split(',') if _cors_origins != '*' else ['*']
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=_cors_list,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Configure logging
 logging.basicConfig(
